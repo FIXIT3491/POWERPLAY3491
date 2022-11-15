@@ -97,7 +97,7 @@ public class CompetitionTeleOp extends LinearOpMode {
             lateral = gamepad1.left_stick_x;
             yaw = gamepad1.right_stick_x;
 
-            //When a is pressed the robot now wants to always point in the direction it's currently facing
+            //when gamepad1.a is pressed the robot now wants to always point in the direction it's currently facing
             if(gamepad1.a){
                 auto = true;
                 resetAngle();
