@@ -1,0 +1,20 @@
+---------
+GamePad 1
+---------
+Left Joystick X = Turning
+
+Left Joystick Y Forwards/Backwards
+
+Right Joystick X = Strafing
+
+A = Change Driving Mode to Field Oriented
+
+B = Change Driving Mode to Default
+
+---------
+GamePad 2
+---------
+
+Left Joystick Y = Slide Extender
+
+LT RT = Grabber - Its bumper rn but I shall change it

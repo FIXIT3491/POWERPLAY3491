@@ -62,7 +62,18 @@ public class AutoMecanumDrive extends LinearOpMode {
         angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
 
 
-        polygon(4, 0.5, 1000);
+        //polygon(4, 0.5, 1000);
+
+        //motorTest
+        leftFront.setPower(1);
+        sleep(2000);
+        rightFront.setPower(1);
+        sleep(2000);
+        rightBack.setPower(1);
+        sleep(2000);
+        leftBack.setPower(1);
+        sleep(2000);
+
 
     }
 

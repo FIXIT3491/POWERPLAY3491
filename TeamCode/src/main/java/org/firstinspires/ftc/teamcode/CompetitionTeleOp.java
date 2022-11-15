@@ -4,6 +4,7 @@ import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
@@ -11,8 +12,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 
-@TeleOp(name = "BasicOmniDrive")
-public class BasicOmniDrive extends LinearOpMode {
+@TeleOp(name = "CompetitionTeleOp")
+public class CompetitionTeleOp extends LinearOpMode {
     private final ElapsedTime runtime = new ElapsedTime();
     Orientation lastAngles = new Orientation();
     double globalAngle = 0;
@@ -22,13 +23,22 @@ public class BasicOmniDrive extends LinearOpMode {
     private DcMotor leftBack = null;
     private DcMotor rightFront = null;
     private DcMotor rightBack = null;
+    private DcMotor slideExtender = null;
+    private Servo grabberClaw = null;
 
     @Override
-    public void runOpMode() throws InterruptedException {
+    public void runOpMode(){
+
+        //000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+        //Init Stuff Here                                                                          0
+        //000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+
         leftFront = hardwareMap.get(DcMotor.class, "leftFront");
         leftBack = hardwareMap.get(DcMotor.class, "leftBack");
         rightFront = hardwareMap.get(DcMotor.class, "rightFront");
         rightBack = hardwareMap.get(DcMotor.class, "rightBack");
+        slideExtender = hardwareMap.get(DcMotor.class, "slideExtender");
+        grabberClaw = hardwareMap.get(Servo.class, "grabberClaw");
 
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
         parameters.loggingEnabled = true;
@@ -45,11 +55,14 @@ public class BasicOmniDrive extends LinearOpMode {
         leftBack.setDirection(DcMotor.Direction.REVERSE);
         rightFront.setDirection(DcMotor.Direction.FORWARD);
         rightBack.setDirection(DcMotor.Direction.FORWARD);
+        slideExtender.setDirection(DcMotor.Direction.REVERSE);
 
         leftFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         leftBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        slideExtender.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
 
         telemetry.addData("Status", "Calibrating");
         telemetry.update();
@@ -71,6 +84,10 @@ public class BasicOmniDrive extends LinearOpMode {
         double direction = 0;
 
         while(opModeIsActive()){
+
+            //000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+            //Driving Control                                                                          0
+            //000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 
             axial = -gamepad1.left_stick_y;
             lateral = gamepad1.left_stick_x;
@@ -110,19 +127,37 @@ public class BasicOmniDrive extends LinearOpMode {
             telemetry.addData("yaw", yaw);
             telemetry.addData("direction", direction);
             //telemetry.addData("autopilot on", auto);
-            telemetry.update();
-        }
 
+            //000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+            //Mechanism Control                                                                        0
+            //000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+
+            //basic viper slide control
+            double extenderPower = gamepad2.left_stick_y;
+
+            slideExtender.setPower(extenderPower);
+
+            telemetry.addData("Extender Power", extenderPower);
+            telemetry.update();
+
+            //basic grabber claw control - change to trigger not bumper!!
+            if(gamepad2.left_bumper = true){
+                grabberClaw.setPosition(0);
+            }
+            if(gamepad2.right_bumper = true){
+                grabberClaw.setPosition(1);
+            }
+        }
     }
 
     //basic driving function
     public void driveDumb(double axial, double lateral, double yaw) {
         double max;
 
-        double leftFrontPower = axial + lateral + yaw;
-        double rightFrontPower = axial - lateral - yaw;
-        double leftBackPower = axial - lateral + yaw;
-        double rightBackPower = axial + lateral - yaw;
+        double leftFrontPower = - axial - lateral - yaw;
+        double rightFrontPower = - axial + lateral + yaw;
+        double leftBackPower = axial + lateral - yaw;
+        double rightBackPower = axial - lateral + yaw;
 
         max = Math.max(Math.abs(leftFrontPower), Math.abs(rightFrontPower));
         max = Math.max(max, Math.abs(leftBackPower));
