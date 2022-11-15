@@ -1,8 +1,8 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -14,11 +14,17 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 
 @TeleOp(name = "CompetitionTeleOp")
 public class CompetitionTeleOp extends LinearOpMode {
+
     private final ElapsedTime runtime = new ElapsedTime();
+
     Orientation lastAngles = new Orientation();
+
     double globalAngle = 0;
+
     BNO055IMU imu;
+
     Orientation angles;
+
     private DcMotor leftFront = null;
     private DcMotor leftBack = null;
     private DcMotor rightFront = null;
@@ -47,7 +53,6 @@ public class CompetitionTeleOp extends LinearOpMode {
         parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
         parameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
 
-
         imu = hardwareMap.get(BNO055IMU.class, "imu");
         imu.initialize(parameters);
 
@@ -63,7 +68,6 @@ public class CompetitionTeleOp extends LinearOpMode {
         rightBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         slideExtender.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-
         telemetry.addData("Status", "Calibrating");
         telemetry.update();
 
@@ -71,6 +75,7 @@ public class CompetitionTeleOp extends LinearOpMode {
             sleep(50);
             idle();
         }
+
         telemetry.addData("Status", "Waiting For Start");
         telemetry.update();
         waitForStart();
@@ -80,43 +85,45 @@ public class CompetitionTeleOp extends LinearOpMode {
         double axial = 0;   //how fast forward the drivers want the robot to move
         double lateral = 0; //how fast sideways the drivers want the robot to move
         double yaw = 0;     //how fast the drivers want the robot to spin
-        boolean auto = false;
         double direction = 0;
-
+        boolean auto = false;
         while(opModeIsActive()){
 
-            //000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
-            //Driving Control                                                                          0
-            //000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+            //00000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+            //Driving Control                                                                      0
+            //00000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 
             axial = -gamepad1.left_stick_y;
             lateral = gamepad1.left_stick_x;
             yaw = gamepad1.right_stick_x;
 
-            if(gamepad1.a){//When a is pressed the robot now wants to always point in the direction it's currently facing
+            //When a is pressed the robot now wants to always point in the direction it's currently facing
+            if(gamepad1.a){
                 auto = true;
                 resetAngle();
                 direction = 0;
             }
+
             if(gamepad1.b){
                 auto = false;
             }
 
             if(auto){
-
-
                 //If drivers are trying to turn, constantly set the desired direction to something out of reach to keep the robot turning
                 if(yaw != 0){
                     direction = getAngle() - yaw * 20;
                 }
-                driveSmart(axial, lateral, direction); //driveSmart aimed at pointing at direction, in degrees
+
+                //driveSmart aimed at pointing at direction, in degrees
+                driveSmart(axial, lateral, direction);
 
                 //try to get rid of shimmy from robot overcorrecting after the drivers stop turning
                 if(yaw != 0){
                     direction = getAngle();
                 }
+            }
 
-            }else{
+            else{
                 //Drivers get manual control of robot when robot be small brain
                 driveDumb(axial, lateral, yaw);
             }
@@ -126,11 +133,11 @@ public class CompetitionTeleOp extends LinearOpMode {
             telemetry.addData("lateral", lateral);
             telemetry.addData("yaw", yaw);
             telemetry.addData("direction", direction);
-            //telemetry.addData("autopilot on", auto);
+            telemetry.addData("autopilot", auto);
 
-            //000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
-            //Mechanism Control                                                                        0
-            //000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+            //00000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+            //Mechanism Control                                                                    0
+            //00000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 
             //basic viper slide control
             double extenderPower = gamepad2.left_stick_y;
@@ -152,6 +159,7 @@ public class CompetitionTeleOp extends LinearOpMode {
 
     //basic driving function
     public void driveDumb(double axial, double lateral, double yaw) {
+
         double max;
 
         double leftFrontPower = - axial - lateral - yaw;
@@ -187,17 +195,16 @@ public class CompetitionTeleOp extends LinearOpMode {
         double max, leftFrontPower, rightFrontPower, leftBackPower, rightBackPower;
         double correction, angle, gain = .05;
 
-
         do{
             angle = getAngle();
 
+            //value may need tinkering
             correction = (-angle + yaw) * gain;
 
-            leftFrontPower = axial + lateral - correction;
-            rightFrontPower = axial - lateral + correction;
-            leftBackPower = axial - lateral - correction;
-            rightBackPower = axial + lateral + correction;
-
+            leftFrontPower = - axial - lateral - correction;
+            rightFrontPower = - axial + lateral + correction;
+            leftBackPower = axial + lateral - correction;
+            rightBackPower = axial - lateral + correction;
 
             max = Math.max(Math.abs(leftFrontPower), Math.abs(rightFrontPower));
             max = Math.max(max, Math.abs(leftBackPower));
@@ -215,27 +222,26 @@ public class CompetitionTeleOp extends LinearOpMode {
             leftBack.setPower(leftBackPower);
             rightBack.setPower(rightBackPower);
 
-        }while (timer.milliseconds() <= time && opModeIsActive());
+        }
+
+        while (timer.milliseconds() <= time && opModeIsActive());
+
     }
 
     public void driveSmart(double axial, double lateral, double yaw){
         driveSmart(axial, lateral, yaw, 0);
     }
 
-    /**
-     * Resets the cumulative angle tracking to zero.
-     */
+    //Resets the cumulative angle tracking to zero.
     private void resetAngle() {
         lastAngles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
 
         globalAngle = 0;
     }
 
-    /**
-     * Get current cumulative angle rotation from last reset.
-     *
-     * @return Angle in degrees. + = left, - = right.
-     */
+
+    //Get current cumulative angle rotation from last reset.
+    //Angle in degrees. + = left, - = right.
     private double getAngle() {
         // We experimentally determined the Z axis is the axis we want to use for heading angle.
         // We have to process the angle because the imu works in euler angles so the Z axis is
