@@ -24,7 +24,12 @@ public class AutoMecanumDrive extends LinearOpMode {
     private DcMotor rightBack = null;
 
     @Override
-    public void runOpMode() throws InterruptedException {
+    public void runOpMode(){
+
+        //000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+        //Init stuff here:                                                                         0
+        //000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+
         leftFront = hardwareMap.get(DcMotor.class, "leftFront");
         leftBack = hardwareMap.get(DcMotor.class, "leftBack");
         rightFront = hardwareMap.get(DcMotor.class, "rightFront");
@@ -61,36 +66,32 @@ public class AutoMecanumDrive extends LinearOpMode {
 
         angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
 
+        //000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+        //Code to run go here:                                                                     0
+        //000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 
         //polygon(4, 0.5, 1000);
 
-        //motorTest
-        leftFront.setPower(1);
-        sleep(2000);
-        rightFront.setPower(1);
-        sleep(2000);
-        rightBack.setPower(1);
-        sleep(2000);
-        leftBack.setPower(1);
-        sleep(2000);
+        ////motorTest
+        //leftFront.setPower(1);
+        //sleep(2000);
+        //rightFront.setPower(1);
+        //sleep(2000);
+        //rightBack.setPower(1);
+        //sleep(2000);
+        //leftBack.setPower(1);
+        //sleep(2000);
+
+        //drive around baby
+        driveSmart(1, 0, 1000);
 
 
-    }
 
-    //drive robot in defined polygon
-    private void polygon(double sides, double power, long time) {
+    } //runOpMode
 
-        double degrees = 180 - (sides - 2) * 180 / sides;
-        for (int i = 0; i < sides; i++) {
-            resetAngle();
-            driveSmart(power, 0, time);
-
-            rotate(degrees);
-
-        }
-
-
-    }
+    //0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+    //Functions                                                                                    0
+    //0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 
     //basic driving function
     public void driveDumb(double axial, double lateral, double yaw) {
@@ -135,10 +136,10 @@ public class AutoMecanumDrive extends LinearOpMode {
 
             correction = -angle * gain;
 
-            leftFrontPower = axial + lateral - correction;
-            rightFrontPower = axial - lateral + correction;
-            leftBackPower = axial - lateral - correction;
-            rightBackPower = axial + lateral + correction;
+            leftFrontPower = - axial - lateral - correction;
+            rightFrontPower = - axial + lateral + correction;
+            leftBackPower = axial + lateral - correction;
+            rightBackPower = axial - lateral + correction;
 
 
             max = Math.max(Math.abs(leftFrontPower), Math.abs(rightFrontPower));
@@ -159,10 +160,27 @@ public class AutoMecanumDrive extends LinearOpMode {
 
         }
 
+        //stop motors
         driveDumb(0, 0, 0);
 
     }
 
+    //polygonal driving function (kinda useless for auto but eh its cool)
+    private void polygon(double sides, double power, long time) {
+
+        double degrees = 180 - (sides - 2) * 180 / sides;
+        for (int i = 0; i < sides; i++) {
+            resetAngle();
+            driveSmart(power, 0, time);
+
+            rotate(degrees);
+
+        }
+
+
+    }
+
+    //imu things
     /**
      * Resets the cumulative angle tracking to zero.
      */
