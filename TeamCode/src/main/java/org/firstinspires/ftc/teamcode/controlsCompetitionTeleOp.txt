@@ -14,12 +14,9 @@ B = Change Driving Mode to Default
 ---------
 GamePad 2
 ---------
+Left Bumper/Right Bumper = Grabber
 
-Left Joystick Y = Slide Extender
-
-LT RT = Grabber - Its bumper rn but I shall change it
-
-X = Junction
+X = Floor
 
 Y = Low Pole
 

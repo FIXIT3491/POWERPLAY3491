@@ -246,7 +246,6 @@ public class AutoMecanumDrive extends LinearOpMode {
         return correction;
     }
 
-
     /**
      * Rotate left or right the number of degrees. Does not support turning more than 180 degrees.
      *

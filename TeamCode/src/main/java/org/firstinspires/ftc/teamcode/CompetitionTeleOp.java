@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.hardware.TouchSensor;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
@@ -31,6 +32,7 @@ public class CompetitionTeleOp extends LinearOpMode {
     private DcMotor rightBack = null;
     private DcMotor slideExtender = null;
     private Servo grabberClaw = null;
+    private TouchSensor slideSensor = null;
 
     @Override
     public void runOpMode(){
@@ -45,6 +47,7 @@ public class CompetitionTeleOp extends LinearOpMode {
         rightBack = hardwareMap.get(DcMotor.class, "rightBack");
         slideExtender = hardwareMap.get(DcMotor.class, "slideExtender");
         grabberClaw = hardwareMap.get(Servo.class, "grabberClaw");
+        slideSensor = hardwareMap.get(TouchSensor.class, "slideSensor");
 
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
         parameters.loggingEnabled = true;
@@ -134,18 +137,12 @@ public class CompetitionTeleOp extends LinearOpMode {
             telemetry.addData("yaw", yaw);
             telemetry.addData("direction", direction);
             telemetry.addData("autopilot", auto);
+            telemetry.addData("slide value", slideExtender.getCurrentPosition());
+            telemetry.update();
 
             //00000000000000000000000000000000000000000000000000000000000000000000000000000000000000
             //Mechanism Control                                                                    0
             //00000000000000000000000000000000000000000000000000000000000000000000000000000000000000
-
-            //basic viper slide control
-            double extenderPower = gamepad2.left_stick_y;
-
-            slideExtender.setPower(extenderPower);
-
-            telemetry.addData("Extender Power", extenderPower);
-            telemetry.update();
 
             //basic grabber claw control - change to trigger not bumper!!
             if(gamepad2.left_bumper){
@@ -157,57 +154,47 @@ public class CompetitionTeleOp extends LinearOpMode {
             }
 
             //advanced viper slide control
-            // Gamepad 2 left Bumper is floor
+            int floor = 0;
+            int lowPole = -1000;
+            int midPole = -2000;
+            int hiPole = -3700;
 
-            int Floor = 0;
-            int Junction = -100;
-            int LowPole = -1000;
-            int MidPole = -2000;
-            int HiPole = -3000;
-            double SnakeSlidePower = .5;
+            if (slideSensor.isPressed()) {
+                slideExtender.setPower(0.5);
+            } else {
+                slideExtender.setPower(1);
+            }
 
-            //Move the slide
+            if (gamepad2.x)
+                extenderMove(floor);
 
-//            void extenderMove(int SlidePos) {
-//
-//                telemetry.addData("Slide Value", SlidePos);
-//                telemetry.update();
-//
-//                slideExtender.setTargetPosition(SlidePos);
-//                slideExtender.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-//                slideExtender.setPower(.5);
-//            }
-//
-//            //Move lift
-//
-//            if (gamepad2.left_bumper) {
-//
-//                extenderMove(Floor);
-//
-//                else if (gamepad2.x)
-//
-//                    extenderMove(Junction);
-//
-//                else if (gamepad2.y)
-//
-//                    moveSnake(LowPole);
-//
-//                else if (gamepad2.b)
-//
-//                    moveSnake(MidPole);
-//
-//                else if (gamepad2.a)
-//
-//                    moveSnake(HiPole);
-//            }
+                else if (gamepad2.y)
+
+                    extenderMove(lowPole);
+
+                else if (gamepad2.b)
+
+                    extenderMove(midPole);
+
+                else if (gamepad2.a)
+
+                    extenderMove(hiPole);
+            }
         }
+    //advanced slide control function
+    public void extenderMove(int slidePosition) {
+
+        telemetry.addData("Slide Value", slidePosition);
+
+        slideExtender.setTargetPosition(slidePosition);
+        slideExtender.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        slideExtender.setPower(1);
     }
 
     //basic driving function
     public void driveDumb(double axial, double lateral, double yaw) {
 
         double max;
-
         double leftFrontPower = - axial - lateral - yaw;
         double rightFrontPower = - axial + lateral + yaw;
         double leftBackPower = axial + lateral - yaw;
