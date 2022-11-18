@@ -51,6 +51,11 @@ public class AutoMecanumDrive extends LinearOpMode {
         rightFront.setDirection(DcMotor.Direction.FORWARD);
         rightBack.setDirection(DcMotor.Direction.FORWARD);
 
+        leftFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        leftBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rightFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rightBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
         telemetry.addData("Status", "Calibrating");
         telemetry.update();
 
@@ -83,7 +88,9 @@ public class AutoMecanumDrive extends LinearOpMode {
         //sleep(2000);
 
         //drive around baby
-        driveSmart(1, 0, 1000);
+        driveSmart(.5, 0, 0, 500);
+        rotate(90);
+        driveSmart(.5, 0, 0, 500);
 
 
 
@@ -94,6 +101,51 @@ public class AutoMecanumDrive extends LinearOpMode {
     //0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 
     //basic driving function
+
+
+    //advanced driving function
+    public void driveSmart(double axial, double lateral, double yaw, double time) {
+
+        ElapsedTime timer = new ElapsedTime();
+
+        timer.reset();
+
+        double max, leftFrontPower, rightFrontPower, leftBackPower, rightBackPower;
+        double correction, angle, gain = .05;
+
+        do{
+            angle = getAngle();
+
+            //value may need tinkering
+            correction = (-angle + yaw) * gain;
+
+            leftFrontPower = axial + lateral - correction;
+            rightFrontPower = axial - lateral + correction;
+            leftBackPower = axial - lateral - correction;
+            rightBackPower = axial + lateral + correction;
+
+            max = Math.max(Math.abs(leftFrontPower), Math.abs(rightFrontPower));
+            max = Math.max(max, Math.abs(leftBackPower));
+            max = Math.max(max, Math.abs(rightBackPower));
+
+            if (max > 1.0) {
+                leftFrontPower /= max;
+                rightFrontPower /= max;
+                leftBackPower /= max;
+                rightBackPower /= max;
+            }
+
+            leftFront.setPower(leftFrontPower);
+            rightFront.setPower(rightFrontPower);
+            leftBack.setPower(leftBackPower);
+            rightBack.setPower(rightBackPower);
+
+        }
+
+        while (timer.milliseconds() <= time && opModeIsActive());
+
+    }
+
     public void driveDumb(double axial, double lateral, double yaw) {
         double max;
 
@@ -120,59 +172,13 @@ public class AutoMecanumDrive extends LinearOpMode {
 
     }
 
-    //advanced driving function
-    public void driveSmart(double axial, double lateral, double time) {
-
-        ElapsedTime timer = new ElapsedTime();
-
-        timer.reset();
-
-        double max, leftFrontPower, rightFrontPower, leftBackPower, rightBackPower;
-        double correction, angle, gain = .10;
-
-        while (timer.milliseconds() < time) {
-
-            angle = getAngle();
-
-            correction = -angle * gain;
-
-            leftFrontPower = - axial - lateral - correction;
-            rightFrontPower = - axial + lateral + correction;
-            leftBackPower = axial + lateral - correction;
-            rightBackPower = axial - lateral + correction;
-
-
-            max = Math.max(Math.abs(leftFrontPower), Math.abs(rightFrontPower));
-            max = Math.max(max, Math.abs(leftBackPower));
-            max = Math.max(max, Math.abs(rightBackPower));
-
-            if (max > 1.0) {
-                leftFrontPower /= max;
-                rightFrontPower /= max;
-                leftBackPower /= max;
-                rightBackPower /= max;
-            }
-
-            leftFront.setPower(leftFrontPower);
-            rightFront.setPower(rightFrontPower);
-            leftBack.setPower(leftBackPower);
-            rightBack.setPower(rightBackPower);
-
-        }
-
-        //stop motors
-        driveDumb(0, 0, 0);
-
-    }
-
     //polygonal driving function (kinda useless for auto but eh its cool)
     private void polygon(double sides, double power, long time) {
 
         double degrees = 180 - (sides - 2) * 180 / sides;
         for (int i = 0; i < sides; i++) {
             resetAngle();
-            driveSmart(power, 0, time);
-
+            driveSmart(power, 0,0, time);
             rotate(degrees);
 
         }

@@ -94,8 +94,8 @@ public class CompetitionTeleOp extends LinearOpMode {
             //00000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 
             axial = -gamepad1.left_stick_y;
-            lateral = gamepad1.left_stick_x;
-            yaw = gamepad1.right_stick_x;
+            lateral = gamepad1.right_stick_x;
+            yaw = gamepad1.left_stick_x;
 
             //when gamepad1.a is pressed the robot now wants to always point in the direction it's currently facing
             if(gamepad1.a){
@@ -148,12 +148,58 @@ public class CompetitionTeleOp extends LinearOpMode {
             telemetry.update();
 
             //basic grabber claw control - change to trigger not bumper!!
-            if(gamepad2.left_bumper = true){
+            if(gamepad2.left_bumper){
                 grabberClaw.setPosition(0);
             }
-            if(gamepad2.right_bumper = true){
-                grabberClaw.setPosition(1);
+
+            if(gamepad2.right_bumper){
+                grabberClaw.setPosition(0.5);
             }
+
+            //advanced viper slide control
+            // Gamepad 2 left Bumper is floor
+
+            int Floor = 0;
+            int Junction = -100;
+            int LowPole = -1000;
+            int MidPole = -2000;
+            int HiPole = -3000;
+            double SnakeSlidePower = .5;
+
+            //Move the slide
+
+//            void extenderMove(int SlidePos) {
+//
+//                telemetry.addData("Slide Value", SlidePos);
+//                telemetry.update();
+//
+//                slideExtender.setTargetPosition(SlidePos);
+//                slideExtender.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//                slideExtender.setPower(.5);
+//            }
+//
+//            //Move lift
+//
+//            if (gamepad2.left_bumper) {
+//
+//                extenderMove(Floor);
+//
+//                else if (gamepad2.x)
+//
+//                    extenderMove(Junction);
+//
+//                else if (gamepad2.y)
+//
+//                    moveSnake(LowPole);
+//
+//                else if (gamepad2.b)
+//
+//                    moveSnake(MidPole);
+//
+//                else if (gamepad2.a)
+//
+//                    moveSnake(HiPole);
+//            }
         }
     }
 

@@ -18,3 +18,11 @@ GamePad 2
 Left Joystick Y = Slide Extender
 
 LT RT = Grabber - Its bumper rn but I shall change it
+
+X = Junction
+
+Y = Low Pole
+
+B = Mid Pole
+
+A = Hi Pole
