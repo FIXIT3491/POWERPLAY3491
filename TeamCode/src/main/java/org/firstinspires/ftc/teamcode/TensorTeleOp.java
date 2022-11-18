@@ -48,6 +48,7 @@ public class TensorTeleOp extends LinearOpMode {
             leftFront.setDirection(DcMotorSimple.Direction.REVERSE);
             rightBack.setDirection(DcMotorSimple.Direction.REVERSE);
             while (opModeIsActive()) {
+
                 leftBack.setPower(((0 + gamepad1.right_stick_y) - gamepad1.left_stick_x) + gamepad1.right_stick_x);
                 rightBack.setPower(((0 + gamepad1.right_stick_y) + gamepad1.left_stick_x) - gamepad1.right_stick_x);
                 leftFront.setPower((0 + gamepad1.right_stick_y) - gamepad1.left_stick_x - gamepad1.right_stick_x);

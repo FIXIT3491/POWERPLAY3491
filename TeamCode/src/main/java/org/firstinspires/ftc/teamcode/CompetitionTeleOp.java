@@ -100,36 +100,37 @@ public class CompetitionTeleOp extends LinearOpMode {
             lateral = gamepad1.right_stick_x;
             yaw = gamepad1.left_stick_x;
 
-            //when gamepad1.a is pressed the robot now wants to always point in the direction it's currently facing
-            if(gamepad1.a){
-                auto = true;
-                resetAngle();
-                direction = 0;
-            }
-
-            if(gamepad1.b){
-                auto = false;
-            }
-
-            if(auto){
-                //If drivers are trying to turn, constantly set the desired direction to something out of reach to keep the robot turning
-                if(yaw != 0){
-                    direction = getAngle() - yaw * 20;
-                }
-
-                //driveSmart aimed at pointing at direction, in degrees
-                driveSmart(axial, lateral, direction);
-
-                //try to get rid of shimmy from robot overcorrecting after the drivers stop turning
-                if(yaw != 0){
-                    direction = getAngle();
-                }
-            }
-
-            else{
-                //Drivers get manual control of robot when robot be small brain
-                driveDumb(axial, lateral, yaw);
-            }
+//            //when gamepad1.a is pressed the robot now wants to always point in the direction it's currently facing
+//            if(gamepad1.a){
+//                auto = true;
+//                resetAngle();
+//                direction = 0;
+//            }
+//
+//            if(gamepad1.b){
+//                auto = false;
+//            }
+//
+//            if(auto){
+//                //If drivers are trying to turn, constantly set the desired direction to something out of reach to keep the robot turning
+//                if(yaw != 0){
+//                    direction = getAngle() - yaw * 20;
+//                }
+//
+//                //driveSmart aimed at pointing at direction, in degrees
+//                driveSmart(axial, lateral, direction);
+//
+//                //try to get rid of shimmy from robot overcorrecting after the drivers stop turning
+//                if(yaw != 0){
+//                    direction = getAngle();
+//                }
+//            }
+//
+//            else{
+//                //Drivers get manual control of robot when robot be small brain
+//                driveDumb(axial, lateral, yaw);
+//            }
+            driveDumb(axial, lateral, yaw);
 
             telemetry.addData("Status", "Running");
             telemetry.addData("axial", axial);

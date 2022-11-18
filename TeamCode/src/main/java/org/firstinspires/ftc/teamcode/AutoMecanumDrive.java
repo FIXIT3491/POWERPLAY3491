@@ -88,11 +88,7 @@ public class AutoMecanumDrive extends LinearOpMode {
         //sleep(2000);
 
         //drive around baby
-        driveSmart(.5, 0, 0, 500);
         rotate(90);
-        driveSmart(.5, 0, 0, 500);
-
-
 
     } //runOpMode
 
@@ -119,10 +115,10 @@ public class AutoMecanumDrive extends LinearOpMode {
             //value may need tinkering
             correction = (-angle + yaw) * gain;
 
-            leftFrontPower = axial + lateral - correction;
-            rightFrontPower = axial - lateral + correction;
-            leftBackPower = axial - lateral - correction;
-            rightBackPower = axial + lateral + correction;
+            leftFrontPower = - axial - lateral - correction;
+            rightFrontPower = - axial + lateral + correction;
+            leftBackPower = axial + lateral - correction;
+            rightBackPower = axial - lateral + correction;
 
             max = Math.max(Math.abs(leftFrontPower), Math.abs(rightFrontPower));
             max = Math.max(max, Math.abs(leftBackPower));
@@ -147,12 +143,12 @@ public class AutoMecanumDrive extends LinearOpMode {
     }
 
     public void driveDumb(double axial, double lateral, double yaw) {
-        double max;
 
-        double leftFrontPower = axial + lateral + yaw;
-        double rightFrontPower = axial - lateral - yaw;
-        double leftBackPower = axial - lateral + yaw;
-        double rightBackPower = axial + lateral - yaw;
+        double max;
+        double leftFrontPower = - axial - lateral - yaw;
+        double rightFrontPower = - axial + lateral + yaw;
+        double leftBackPower = axial + lateral - yaw;
+        double rightBackPower = axial - lateral + yaw;
 
         max = Math.max(Math.abs(leftFrontPower), Math.abs(rightFrontPower));
         max = Math.max(max, Math.abs(leftBackPower));
