@@ -1,0 +1,3 @@
+- zero the encoder when floor
+- make arm able to be controlled by joystick too (and hold position)
+- auton fix plz
