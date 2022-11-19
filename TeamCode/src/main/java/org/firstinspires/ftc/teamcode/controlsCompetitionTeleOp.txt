@@ -1,11 +1,11 @@
 ---------
 GamePad 1
 ---------
-Left Joystick X = Turning
+Left Joystick X = Strafing
 
 Left Joystick Y Forwards/Backwards
 
-Right Joystick X = Strafing
+Right Joystick X = Turning
 
 A = Change Driving Mode to Field Oriented
 
