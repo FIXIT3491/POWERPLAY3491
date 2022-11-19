@@ -155,16 +155,10 @@ public class CompetitionTeleOp extends LinearOpMode {
             }
 
             //advanced viper slide control
-            int floor = -100;
+            int floor = 0;
             int lowPole = -1000;
             int midPole = -2000;
-            int hiPole = -3700;
-
-            if (slideSensor.isPressed()) {
-                slideExtender.setPower(0.5);
-            } else {
-                slideExtender.setPower(1);
-            }
+            int hiPole = -3900;
 
             if (gamepad2.x)
                 extenderMove(floor);
@@ -189,7 +183,7 @@ public class CompetitionTeleOp extends LinearOpMode {
 
         slideExtender.setTargetPosition(slidePosition);
         slideExtender.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        slideExtender.setPower(0.5);
+        slideExtender.setPower(1);
     }
 
     //basic driving function
