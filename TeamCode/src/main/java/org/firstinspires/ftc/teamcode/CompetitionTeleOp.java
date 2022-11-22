@@ -4,6 +4,7 @@ import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.hardware.TouchSensor;
@@ -35,7 +36,7 @@ public class CompetitionTeleOp extends LinearOpMode {
     private TouchSensor slideSensor = null;
 
     @Override
-    public void runOpMode(){
+    public void runOpMode() {
 
         //000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
         //Init Stuff Here                                                                          0
@@ -90,7 +91,7 @@ public class CompetitionTeleOp extends LinearOpMode {
         double yaw = 0;     //how fast the drivers want the robot to spin
         double direction = 0;
         boolean auto = false;
-        while(opModeIsActive()){
+        while (opModeIsActive()) {
 
             //00000000000000000000000000000000000000000000000000000000000000000000000000000000000000
             //Driving Control                                                                      0
@@ -100,36 +101,6 @@ public class CompetitionTeleOp extends LinearOpMode {
             lateral = gamepad1.right_stick_x;
             yaw = gamepad1.left_stick_x;
 
-//            //when gamepad1.a is pressed the robot now wants to always point in the direction it's currently facing
-//            if(gamepad1.a){
-//                auto = true;
-//                resetAngle();
-//                direction = 0;
-//            }
-//
-//            if(gamepad1.b){
-//                auto = false;
-//            }
-//
-//            if(auto){
-//                //If drivers are trying to turn, constantly set the desired direction to something out of reach to keep the robot turning
-//                if(yaw != 0){
-//                    direction = getAngle() - yaw * 20;
-//                }
-//
-//                //driveSmart aimed at pointing at direction, in degrees
-//                driveSmart(axial, lateral, direction);
-//
-//                //try to get rid of shimmy from robot overcorrecting after the drivers stop turning
-//                if(yaw != 0){
-//                    direction = getAngle();
-//                }
-//            }
-//
-//            else{
-//                //Drivers get manual control of robot when robot be small brain
-//                driveDumb(axial, lateral, yaw);
-//            }
             driveDumb(axial, lateral, yaw);
 
             telemetry.addData("Status", "Running");
@@ -139,6 +110,7 @@ public class CompetitionTeleOp extends LinearOpMode {
             telemetry.addData("direction", direction);
             telemetry.addData("autopilot", auto);
             telemetry.addData("slide value", slideExtender.getCurrentPosition());
+            telemetry.addData("joystick y val 2", gamepad2.right_stick_y);
             telemetry.update();
 
             //00000000000000000000000000000000000000000000000000000000000000000000000000000000000000
@@ -146,41 +118,49 @@ public class CompetitionTeleOp extends LinearOpMode {
             //00000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 
             //basic grabber claw control - change to trigger not bumper!!
-            if(gamepad2.left_bumper){
+            if (gamepad2.left_bumper || gamepad1.left_bumper) {
                 grabberClaw.setPosition(0);
             }
 
-            if(gamepad2.right_bumper){
+            if (gamepad2.right_bumper || gamepad1.right_bumper) {
                 grabberClaw.setPosition(0.5);
             }
 
-            //advanced viper slide control
+            //viper slide control
             int floor = 0;
-            int lowPole = -1000;
-            int midPole = -2000;
-            int hiPole = -3900;
+            int lowPole = -1630;
+            int midPole = -2830;
+            int hiPole = -4000;
 
-            if (gamepad2.x)
+            //joystick slide control
+            if (gamepad2.left_stick_x > 0) {
+                extenderMove(-4000);
+
+            } else if (gamepad2.left_stick_x < 0) {
+                extenderMove(0);
+            }
+
+            //button slide control
+            if (slideSensor.isPressed()) {
+                slideExtender.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                slideExtender.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+            } else if (gamepad2.x) {
                 extenderMove(floor);
 
-                else if (gamepad2.y)
+            } else if (gamepad2.y) {
+                extenderMove(lowPole);
 
-                    extenderMove(lowPole);
+            } else if (gamepad2.b) {
+                extenderMove(midPole);
 
-                else if (gamepad2.b)
-
-                    extenderMove(midPole);
-
-                else if (gamepad2.a)
-
-                    extenderMove(hiPole);
-            }
+            } else if (gamepad2.a)
+                extenderMove(hiPole);
         }
-    //advanced slide control function
+    }
+
+    //slide control function
     public void extenderMove(int slidePosition) {
-
-        telemetry.addData("Slide Value", slidePosition);
-
         slideExtender.setTargetPosition(slidePosition);
         slideExtender.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         slideExtender.setPower(1);
@@ -190,8 +170,8 @@ public class CompetitionTeleOp extends LinearOpMode {
     public void driveDumb(double axial, double lateral, double yaw) {
 
         double max;
-        double leftFrontPower = - axial - lateral - yaw;
-        double rightFrontPower = - axial + lateral + yaw;
+        double leftFrontPower = -axial - lateral - yaw;
+        double rightFrontPower = -axial + lateral + yaw;
         double leftBackPower = axial + lateral - yaw;
         double rightBackPower = axial - lateral + yaw;
 
@@ -223,14 +203,14 @@ public class CompetitionTeleOp extends LinearOpMode {
         double max, leftFrontPower, rightFrontPower, leftBackPower, rightBackPower;
         double correction, angle, gain = .05;
 
-        do{
+        do {
             angle = getAngle();
 
             //value may need tinkering
             correction = (-angle + yaw) * gain;
 
-            leftFrontPower = - axial - lateral - correction;
-            rightFrontPower = - axial + lateral + correction;
+            leftFrontPower = -axial - lateral - correction;
+            rightFrontPower = -axial + lateral + correction;
             leftBackPower = axial + lateral - correction;
             rightBackPower = axial - lateral + correction;
 
@@ -256,7 +236,7 @@ public class CompetitionTeleOp extends LinearOpMode {
 
     }
 
-    public void driveSmart(double axial, double lateral, double yaw){
+    public void driveSmart(double axial, double lateral, double yaw) {
         driveSmart(axial, lateral, yaw, 0);
     }
 
@@ -292,12 +272,12 @@ public class CompetitionTeleOp extends LinearOpMode {
         return globalAngle;
     }
 
-    private void stopDrive(long ms){
+    private void stopDrive(long ms) {
         driveDumb(0, 0, 0);
         sleep(ms);
     }
 
-    private void stopDrive(){
+    private void stopDrive() {
         stopDrive(0);
     }
 }
