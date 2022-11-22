@@ -132,20 +132,16 @@ public class CompetitionTeleOp extends LinearOpMode {
             int midPole = -2830;
             int hiPole = -4000;
 
-            //joystick slide control
-            if (gamepad2.left_stick_x > 0) {
-                extenderMove(-4000);
-
-            } else if (gamepad2.left_stick_x < 0) {
-                extenderMove(0);
-            }
+//            //joystick slide control
+//            if (gamepad2.left_stick_x > 0) {
+//                extenderMove(-4000);
+//
+//            } else if (gamepad2.left_stick_x < 0) {
+//                extenderMove(0);
+//            }
 
             //button slide control
-            if (slideSensor.isPressed()) {
-                slideExtender.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-                slideExtender.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-            } else if (gamepad2.x) {
+            if (gamepad2.x) {
                 extenderMove(floor);
 
             } else if (gamepad2.y) {
