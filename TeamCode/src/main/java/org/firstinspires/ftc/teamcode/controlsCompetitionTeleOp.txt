@@ -1,25 +1,25 @@
 ---------
 GamePad 1
 ---------
+Left Bumper/Right Bumper = Grabber
+
 Left Joystick X = Strafing
 
 Left Joystick Y Forwards/Backwards
 
 Right Joystick X = Turning
 
-A = Change Driving Mode to Field Oriented
-
-B = Change Driving Mode to Default
-
 ---------
 GamePad 2
 ---------
 Left Bumper/Right Bumper = Grabber
 
-X = Floor
+X = Slide Floor
 
-Y = Low Pole
+Y = Slide Low Pole
 
-B = Mid Pole
+B = Slide Mid Pole
 
-A = Hi Pole
+A = Slide Hi Pole
+
+Left Joystick Y = Slide Up/Down

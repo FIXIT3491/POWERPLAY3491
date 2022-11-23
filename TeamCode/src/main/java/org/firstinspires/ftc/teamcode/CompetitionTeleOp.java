@@ -4,7 +4,6 @@ import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.hardware.TouchSensor;
@@ -18,13 +17,9 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 public class CompetitionTeleOp extends LinearOpMode {
 
     private final ElapsedTime runtime = new ElapsedTime();
-
     Orientation lastAngles = new Orientation();
-
     double globalAngle = 0;
-
     BNO055IMU imu;
-
     Orientation angles;
 
     private DcMotor leftFront = null;
@@ -75,6 +70,8 @@ public class CompetitionTeleOp extends LinearOpMode {
         telemetry.addData("Status", "Calibrating");
         telemetry.update();
 
+        slideExtender.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
         while (!isStopRequested() && !imu.isGyroCalibrated()) {
             sleep(50);
             idle();
@@ -93,17 +90,7 @@ public class CompetitionTeleOp extends LinearOpMode {
         boolean auto = false;
         while (opModeIsActive()) {
 
-            //00000000000000000000000000000000000000000000000000000000000000000000000000000000000000
-            //Driving Control                                                                      0
-            //00000000000000000000000000000000000000000000000000000000000000000000000000000000000000
-
-            axial = -gamepad1.left_stick_y;
-            lateral = gamepad1.right_stick_x;
-            yaw = gamepad1.left_stick_x;
-
-            driveDumb(axial, lateral, yaw);
-
-            telemetry.addData("Status", "Running");
+            telemetry.addData("status", "Running");
             telemetry.addData("axial", axial);
             telemetry.addData("lateral", lateral);
             telemetry.addData("yaw", yaw);
@@ -114,10 +101,20 @@ public class CompetitionTeleOp extends LinearOpMode {
             telemetry.update();
 
             //00000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+            //Driving Control                                                                      0
+            //00000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+
+            axial = -gamepad1.left_stick_y;
+            lateral = gamepad1.right_stick_x;
+            yaw = gamepad1.left_stick_x;
+
+            driveDumb(axial, lateral, yaw);
+
+            //00000000000000000000000000000000000000000000000000000000000000000000000000000000000000
             //Mechanism Control                                                                    0
             //00000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 
-            //basic grabber claw control - change to trigger not bumper!!
+            //basic grabber claw control
             if (gamepad2.left_bumper || gamepad1.left_bumper) {
                 grabberClaw.setPosition(0);
             }
@@ -132,15 +129,11 @@ public class CompetitionTeleOp extends LinearOpMode {
             int midPole = -2830;
             int hiPole = -4000;
 
-//            //joystick slide control
-//            if (gamepad2.left_stick_x > 0) {
-//                extenderMove(-4000);
-//
-//            } else if (gamepad2.left_stick_x < 0) {
-//                extenderMove(0);
-//            }
+            if (gamepad2.left_stick_y != 0) {
+                slideExtender.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                slideExtender.setPower(gamepad2.left_stick_y);
+            }
 
-            //button slide control
             if (gamepad2.x) {
                 extenderMove(floor);
 
