@@ -121,11 +121,11 @@ public class CompetitionAuto extends LinearOpMode {
         // If your model is based on SSD MobileNet V1 FPN 640x640 or
         // SSD MobileNet V2 FPNLite 640x640, the image size is 640.
         tfod.useModelFromFile("CustomModelPowerplay.tflite", JavaUtil.createListWith("greenFedora", "redCanada", "yellowDuck"), true, true, 320);
-        tfod.initialize(vuforiaPOWERPLAY, (float) 0.5, true, true);
+        tfod.initialize(vuforiaPOWERPLAY, (float) 0.4, true, true);
         tfod.setClippingMargins(0, 0, 0, 0);
         tfod.activate();
         // Enable following block to zoom in on target.
-        tfod.setZoom(1.5, 16 / 9);
+        tfod.setZoom(1.5, 4/3);
         telemetry.addData("DS preview on/off", "3 dots, Camera Stream");
         telemetry.addData(">", "Press Play to start");
         telemetry.update();

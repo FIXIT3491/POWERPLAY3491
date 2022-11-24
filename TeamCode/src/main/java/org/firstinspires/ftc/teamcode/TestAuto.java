@@ -4,7 +4,6 @@ import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
@@ -12,8 +11,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 
-@Autonomous(name = "AutoMecanumDrive")
-public class AutoMecanumDrive extends LinearOpMode {
+@Autonomous(name = "TestAuto")
+public class TestAuto extends LinearOpMode {
     private final ElapsedTime runtime = new ElapsedTime();
     Orientation lastAngles = new Orientation();
     double globalAngle = 0;
@@ -86,8 +85,7 @@ public class AutoMecanumDrive extends LinearOpMode {
         //sleep(2000);
 
         //drive around baby
-        driveSmart(0,1,0,500);
-
+        driveSmart(0.5,0,0,1000);
     } //runOpMode
 
     //0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
@@ -213,11 +211,6 @@ public class AutoMecanumDrive extends LinearOpMode {
         return globalAngle;
     }
 
-    /**
-     * See if we are moving in a straight line and if not return a power correction value.
-     *
-     * @return Power adjustment, + is adjust left - is adjust right.
-     */
     private double checkDirection() {
         // The gain value determines how sensitive the correction is to direction changes.
         // You will have to experiment with your robot to get small smooth direction changes
@@ -235,12 +228,6 @@ public class AutoMecanumDrive extends LinearOpMode {
 
         return correction;
     }
-
-    /**
-     * Rotate left or right the number of degrees. Does not support turning more than 180 degrees.
-     *
-     * @param degrees Degrees to turn, + is left - is right
-     */
 
     //advanced turning function
     private void rotate(double degrees) {
