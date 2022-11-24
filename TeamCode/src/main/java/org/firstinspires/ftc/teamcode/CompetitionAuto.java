@@ -18,7 +18,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.robotcore.external.tfod.Tfod;
 
-@Autonomous(name = "CompetitionAuto")
+@Autonomous(name = "CompetitionAuto", group = "Autonomous")
 public class CompetitionAuto extends LinearOpMode {
 
     private DcMotor leftFront = null;

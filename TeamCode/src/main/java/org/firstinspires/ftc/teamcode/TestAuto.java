@@ -11,7 +11,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 
-@Autonomous(name = "TestAuto")
+@Autonomous(name = "TestAuto", group = "Autonomous")
 public class TestAuto extends LinearOpMode {
     private final ElapsedTime runtime = new ElapsedTime();
     Orientation lastAngles = new Orientation();
