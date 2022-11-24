@@ -1,8 +1,8 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.auto;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -11,24 +11,22 @@ import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 
-@Autonomous(name = "TestAuto", group = "Autonomous")
-public class TestAuto extends LinearOpMode {
-    private final ElapsedTime runtime = new ElapsedTime();
-    Orientation lastAngles = new Orientation();
-    double globalAngle = 0;
-    BNO055IMU imu;
-    Orientation angles;
+@Autonomous(name = "Don't Use!", group = "Autonomous")
+public class AutoMain extends LinearOpMode {
+
     private DcMotor leftFront = null;
     private DcMotor leftBack = null;
     private DcMotor rightFront = null;
     private DcMotor rightBack = null;
 
+    private final ElapsedTime runtime = new ElapsedTime();
+    Orientation lastAngles = new Orientation();
+    double globalAngle = 0;
+    BNO055IMU imu;
+    Orientation angles;
+
     @Override
     public void runOpMode(){
-
-        //000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
-        //Init stuff here:                                                                         0
-        //000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 
         leftFront = hardwareMap.get(DcMotor.class, "leftFront");
         leftBack = hardwareMap.get(DcMotor.class, "leftBack");
@@ -67,35 +65,10 @@ public class TestAuto extends LinearOpMode {
         waitForStart();
         runtime.reset();
 
-
         angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+    }
 
-        //000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
-        //Code to run go here:                                                                     0
-        //000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
-
-        ////motorTest
-        //leftFront.setPower(1);
-        //sleep(2000);
-        //rightFront.setPower(1);
-        //sleep(2000);
-        //rightBack.setPower(1);
-        //sleep(2000);
-        //leftBack.setPower(1);
-        //sleep(2000);
-
-        //drive around baby
-        driveSmart(0.5,0,0,1000);
-    } //runOpMode
-
-    //0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
-    //Functions                                                                                    0
-    //0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
-
-    //basic driving function
-
-
-    //advanced driving function
+    // epic driving functions
     public void driveSmart(double axial, double lateral, double yaw, double time) {
 
         ElapsedTime timer = new ElapsedTime();
@@ -163,7 +136,6 @@ public class TestAuto extends LinearOpMode {
 
     }
 
-    //polygonal driving function (kinda useless for auto but eh its cool)
     private void polygon(double sides, double power, long time) {
 
         double degrees = 180 - (sides - 2) * 180 / sides;
@@ -174,21 +146,12 @@ public class TestAuto extends LinearOpMode {
         }
     }
 
-    //imu things
-    /**
-     * Resets the cumulative angle tracking to zero.
-     */
     private void resetAngle() {
         lastAngles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
 
         globalAngle = 0;
     }
 
-    /**
-     * Get current cumulative angle rotation from last reset.
-     *
-     * @return Angle in degrees. + = left, - = right.
-     */
     private double getAngle() {
         // We experimentally determined the Z axis is the axis we want to use for heading angle.
         // We have to process the angle because the imu works in euler angles so the Z axis is
@@ -229,7 +192,6 @@ public class TestAuto extends LinearOpMode {
         return correction;
     }
 
-    //advanced turning function
     private void rotate(double degrees) {
         // restart imu movement tracking.
         resetAngle();
@@ -246,7 +208,6 @@ public class TestAuto extends LinearOpMode {
             telemetry.addData("3 correction", correction);
             telemetry.update();
         }
-
 
         // turn the motors off.
         driveDumb(0, 0, 0);

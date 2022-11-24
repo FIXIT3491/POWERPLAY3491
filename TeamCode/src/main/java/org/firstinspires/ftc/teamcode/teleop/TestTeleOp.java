@@ -1,11 +1,11 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.teleop;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
-@TeleOp(name = "TestTeleOp", group = "TeleOp")
+@TeleOp(name = "TestTeleOp", group = "Test")
 public class TestTeleOp extends LinearOpMode {
 
     private DcMotor leftFront;
@@ -13,27 +13,26 @@ public class TestTeleOp extends LinearOpMode {
     private DcMotor leftBack;
     private DcMotor rightFront;
 
-    /**
-     * This function is executed when this Op Mode is selected from the Driver Station.
-     */
+    // very basic mecanum TeleOp *don't change, it just works*
     @Override
     public void runOpMode() {
-
-        //------------------------------------------------------------------------------------------
-        // Driving Controls
-        //------------------------------------------------------------------------------------------
 
         leftFront = hardwareMap.get(DcMotor.class, "leftFront");
         rightBack = hardwareMap.get(DcMotor.class, "rightBack");
         leftBack = hardwareMap.get(DcMotor.class, "leftBack");
         rightFront = hardwareMap.get(DcMotor.class, "rightFront");
 
-        // Put initialization blocks here.
         waitForStart();
         if (opModeIsActive()) {
-            // Put run blocks here.
+
             leftFront.setDirection(DcMotorSimple.Direction.REVERSE);
             rightBack.setDirection(DcMotorSimple.Direction.REVERSE);
+
+            leftFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            leftBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            rightFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            rightBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
             while (opModeIsActive()) {
                 leftBack.setPower(((0 + gamepad1.right_stick_y) - gamepad1.left_stick_x) + gamepad1.right_stick_x);
                 rightBack.setPower(((0 + gamepad1.right_stick_y) + gamepad1.left_stick_x) - gamepad1.right_stick_x);
@@ -41,12 +40,5 @@ public class TestTeleOp extends LinearOpMode {
                 rightFront.setPower(((0 + gamepad1.right_stick_y) + gamepad1.left_stick_x) + gamepad1.right_stick_x);
             }
         }
-        //------------------------------------------------------------------------------------------
-        // Mechanism Controls
-        //------------------------------------------------------------------------------------------
-
-
-
     }
-
 }
