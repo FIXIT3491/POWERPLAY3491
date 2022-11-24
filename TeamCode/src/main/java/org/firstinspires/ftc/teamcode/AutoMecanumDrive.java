@@ -4,6 +4,7 @@ import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
@@ -42,13 +43,12 @@ public class AutoMecanumDrive extends LinearOpMode {
         parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
         parameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
 
-
         imu = hardwareMap.get(BNO055IMU.class, "imu");
         imu.initialize(parameters);
 
-        leftFront.setDirection(DcMotor.Direction.REVERSE);
+        leftFront.setDirection(DcMotor.Direction.FORWARD);
         leftBack.setDirection(DcMotor.Direction.REVERSE);
-        rightFront.setDirection(DcMotor.Direction.FORWARD);
+        rightFront.setDirection(DcMotor.Direction.REVERSE);
         rightBack.setDirection(DcMotor.Direction.FORWARD);
 
         leftFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -75,8 +75,6 @@ public class AutoMecanumDrive extends LinearOpMode {
         //Code to run go here:                                                                     0
         //000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 
-        //polygon(4, 0.5, 1000);
-
         ////motorTest
         //leftFront.setPower(1);
         //sleep(2000);
@@ -88,7 +86,7 @@ public class AutoMecanumDrive extends LinearOpMode {
         //sleep(2000);
 
         //drive around baby
-        rotate(90);
+        driveSmart(0,1,0,500);
 
     } //runOpMode
 
@@ -115,8 +113,8 @@ public class AutoMecanumDrive extends LinearOpMode {
             //value may need tinkering
             correction = (-angle + yaw) * gain;
 
-            leftFrontPower = - axial - lateral - correction;
-            rightFrontPower = - axial + lateral + correction;
+            leftFrontPower = axial - lateral + correction;
+            rightFrontPower = axial + lateral - correction;
             leftBackPower = axial + lateral - correction;
             rightBackPower = axial - lateral + correction;
 
@@ -139,16 +137,15 @@ public class AutoMecanumDrive extends LinearOpMode {
         }
 
         while (timer.milliseconds() <= time && opModeIsActive());
-
     }
 
     public void driveDumb(double axial, double lateral, double yaw) {
 
         double max;
-        double leftFrontPower = - axial - lateral - yaw;
-        double rightFrontPower = - axial + lateral + yaw;
-        double leftBackPower = axial + lateral - yaw;
-        double rightBackPower = axial - lateral + yaw;
+        double leftFrontPower = axial - lateral + yaw;
+        double rightFrontPower = axial + lateral - yaw;
+        double leftBackPower = axial + lateral + yaw;
+        double rightBackPower = axial - lateral - yaw;
 
         max = Math.max(Math.abs(leftFrontPower), Math.abs(rightFrontPower));
         max = Math.max(max, Math.abs(leftBackPower));
@@ -176,10 +173,7 @@ public class AutoMecanumDrive extends LinearOpMode {
             resetAngle();
             driveSmart(power, 0,0, time);
             rotate(degrees);
-
         }
-
-
     }
 
     //imu things
