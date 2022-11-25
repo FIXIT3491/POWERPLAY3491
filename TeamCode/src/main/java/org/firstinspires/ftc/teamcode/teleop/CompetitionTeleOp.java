@@ -72,6 +72,8 @@ public class CompetitionTeleOp extends LinearOpMode {
 
         slideExtender.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
+        grabberClaw.setPosition(0);
+
         while (!isStopRequested() && !imu.isGyroCalibrated()) {
             sleep(50);
             idle();

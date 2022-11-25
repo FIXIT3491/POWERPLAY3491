@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode.auto;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -12,9 +11,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 
-@Autonomous(name = "Don't Use!!", group = "Autonomous")
-@Disabled
-public class AutoMain extends LinearOpMode {
+@Autonomous(name = "CompetitionAuto", group = "Competition")
+public class DriveForwardAuto extends LinearOpMode {
 
     private DcMotor leftFront = null;
     private DcMotor leftBack = null;
@@ -27,8 +25,15 @@ public class AutoMain extends LinearOpMode {
     BNO055IMU imu;
     Orientation angles;
 
+    /**
+     * This function is executed when this Op Mode is selected from the Driver Station.
+     */
     @Override
     public void runOpMode(){
+
+        //000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+        //Init stuff here:                                                                         0
+        //000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 
         leftFront = hardwareMap.get(DcMotor.class, "leftFront");
         leftBack = hardwareMap.get(DcMotor.class, "leftBack");
@@ -68,9 +73,33 @@ public class AutoMain extends LinearOpMode {
         runtime.reset();
 
         angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
-    }
 
-    // epic driving functions
+        //000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+        //Code to run go here:                                                                     0
+        //000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+
+        ////motorTest
+        //leftFront.setPower(1);
+        //sleep(2000);
+        //rightFront.setPower(1);
+        //sleep(2000);
+        //rightBack.setPower(1);
+        //sleep(2000);
+        //leftBack.setPower(1);
+        //sleep(2000);
+
+        //drive around baby
+        driveSmart(0.5,0,0,1000);
+    } //runOpMode
+
+    //0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+    //Functions                                                                                    0
+    //0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+
+    //basic driving function
+
+
+    //advanced driving function
     public void driveSmart(double axial, double lateral, double yaw, double time) {
 
         ElapsedTime timer = new ElapsedTime();
@@ -138,6 +167,7 @@ public class AutoMain extends LinearOpMode {
 
     }
 
+    //polygonal driving function (kinda useless for auto but eh its cool)
     private void polygon(double sides, double power, long time) {
 
         double degrees = 180 - (sides - 2) * 180 / sides;
@@ -148,12 +178,21 @@ public class AutoMain extends LinearOpMode {
         }
     }
 
+    //imu things
+    /**
+     * Resets the cumulative angle tracking to zero.
+     */
     private void resetAngle() {
         lastAngles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
 
         globalAngle = 0;
     }
 
+    /**
+     * Get current cumulative angle rotation from last reset.
+     *
+     * @return Angle in degrees. + = left, - = right.
+     */
     private double getAngle() {
         // We experimentally determined the Z axis is the axis we want to use for heading angle.
         // We have to process the angle because the imu works in euler angles so the Z axis is
@@ -194,6 +233,7 @@ public class AutoMain extends LinearOpMode {
         return correction;
     }
 
+    //advanced turning function
     private void rotate(double degrees) {
         // restart imu movement tracking.
         resetAngle();
@@ -218,3 +258,4 @@ public class AutoMain extends LinearOpMode {
         resetAngle();
     }
 }
+

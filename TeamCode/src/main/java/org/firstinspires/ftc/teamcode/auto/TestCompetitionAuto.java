@@ -1,10 +1,12 @@
 package org.firstinspires.ftc.teamcode.auto;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 @Autonomous(name = "TestCompetitionAuto", group = "Test")
-public class TestCompetitionTeleOp extends LinearOpMode {
+@Disabled
+public class TestCompetitionAuto extends LinearOpMode {
 
     @Override
     public void runOpMode() {
