@@ -117,12 +117,12 @@ public class CompetitionTeleOp extends LinearOpMode {
             //00000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 
             //basic grabber claw control
-            if (gamepad2.left_bumper || gamepad1.left_bumper) {
+            if (gamepad2.left_bumper || gamepad1.left_bumper) { //close
                 grabberClaw.setPosition(0);
             }
 
-            if (gamepad2.right_bumper || gamepad1.right_bumper) {
-                grabberClaw.setPosition(0.5);
+            if (gamepad2.right_bumper || gamepad1.right_bumper) { //open
+                grabberClaw.setPosition(0.3);
             }
 
             //viper slide control

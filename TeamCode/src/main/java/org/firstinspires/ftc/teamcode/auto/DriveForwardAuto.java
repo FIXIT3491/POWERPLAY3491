@@ -25,9 +25,6 @@ public class DriveForwardAuto extends LinearOpMode {
     BNO055IMU imu;
     Orientation angles;
 
-    /**
-     * This function is executed when this Op Mode is selected from the Driver Station.
-     */
     @Override
     public void runOpMode(){
 
@@ -179,20 +176,12 @@ public class DriveForwardAuto extends LinearOpMode {
     }
 
     //imu things
-    /**
-     * Resets the cumulative angle tracking to zero.
-     */
     private void resetAngle() {
         lastAngles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
 
         globalAngle = 0;
     }
 
-    /**
-     * Get current cumulative angle rotation from last reset.
-     *
-     * @return Angle in degrees. + = left, - = right.
-     */
     private double getAngle() {
         // We experimentally determined the Z axis is the axis we want to use for heading angle.
         // We have to process the angle because the imu works in euler angles so the Z axis is
