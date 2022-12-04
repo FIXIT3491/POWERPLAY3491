@@ -136,14 +136,18 @@ public class CompetitionAuto extends LinearOpMode {
         }
 
         /** Wait for the game to begin */
-        telemetry.addData(">", "Press Play to start op mode");
+        telemetry.addData(">", "press play to start op mode");
         telemetry.update();
 
-        grabberClaw.setPosition(0);
+        //grabberClaw.setPosition(0);
 
         waitForStart();
 
         angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+
+        driveSmart(0,0.5,0,1500);
+        driveSmart(0.5,0,0, 2000);
+        driveDumb(0,0,0);
 
         if (opModeIsActive()) {
             while (opModeIsActive()) {
@@ -256,5 +260,114 @@ public class CompetitionAuto extends LinearOpMode {
         leftBack.setPower(leftBackPower);
         rightBack.setPower(rightBackPower);
 
+    }
+
+    public void driveSmart(double axial, double lateral, double yaw, double time) {
+
+        ElapsedTime timer = new ElapsedTime();
+
+        timer.reset();
+
+        double max, leftFrontPower, rightFrontPower, leftBackPower, rightBackPower;
+        double correction, angle, gain = .05;
+
+        do {
+            angle = getAngle();
+
+            //value may need tinkering
+            correction = (angle + yaw) * gain;
+
+            leftFrontPower = axial - lateral + correction;
+            rightFrontPower = axial + lateral - correction;
+            leftBackPower = axial + lateral + correction;
+            rightBackPower = axial - lateral - correction;
+
+            max = Math.max(Math.abs(leftFrontPower), Math.abs(rightFrontPower));
+            max = Math.max(max, Math.abs(leftBackPower));
+            max = Math.max(max, Math.abs(rightBackPower));
+
+            if (max > 1.0) {
+                leftFrontPower /= max;
+                rightFrontPower /= max;
+                leftBackPower /= max;
+                rightBackPower /= max;
+            }
+
+            leftFront.setPower(leftFrontPower);
+            rightFront.setPower(rightFrontPower);
+            leftBack.setPower(leftBackPower);
+            rightBack.setPower(rightBackPower);
+
+        }
+
+        while (timer.milliseconds() <= time && opModeIsActive());
+
+    }
+
+    public void driveSmart(double axial, double lateral, double yaw) {
+        driveSmart(axial, lateral, yaw, 0);
+    }
+
+    //Resets the cumulative angle tracking to zero.
+    private void resetAngle() {
+        lastAngles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+
+        globalAngle = 0;
+    }
+
+
+    //Get current cumulative angle rotation from last reset.
+    //Angle in degrees. + = left, - = right.
+    private double getAngle() {
+        // We experimentally determined the Z axis is the axis we want to use for heading angle.
+        // We have to process the angle because the imu works in euler angles so the Z axis is
+        // returned as 0 to +180 or 0 to -180 rolling back to -179 or +179 when rotation passes
+        // 180 degrees. We detect this transition and track the total cumulative angle of rotation.
+
+        Orientation angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+
+        double deltaAngle = angles.firstAngle - lastAngles.firstAngle;
+
+        if (deltaAngle < -180)
+            deltaAngle += 360;
+        else if (deltaAngle > 180)
+            deltaAngle -= 360;
+
+        globalAngle += deltaAngle;
+
+        lastAngles = angles;
+
+        return globalAngle;
+    }
+
+    private void stopDrive(long ms) {
+        driveDumb(0, 0, 0);
+        sleep(ms);
+    }
+
+    private void rotate(double degrees) {
+
+        // restart imu movement tracking.
+        resetAngle();
+
+        // getAngle() returns + when rotating counter clockwise (left) and - when rotating clockwise (right).
+        double correction;
+
+        while (opModeIsActive() && getAngle() != degrees) {
+            correction = (degrees - getAngle());
+
+            driveDumb(0, 0, correction + correction / Math.abs(correction) * 7.5);
+
+            telemetry.addData("1 imu heading", lastAngles.firstAngle);
+            telemetry.addData("2 global heading", globalAngle);
+            telemetry.addData("3 correction", correction);
+            telemetry.update();
+        }
+
+        // turn the motors off.
+        driveDumb(0, 0, 0);
+
+        // reset angle tracking on new heading.
+        resetAngle();
     }
 }

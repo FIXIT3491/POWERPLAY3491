@@ -1,3 +1,2 @@
-- zero the encoder when floor
+- fix rotate function
 - make arm able to be controlled by joystick too (and hold position)
-- auton fix plz
