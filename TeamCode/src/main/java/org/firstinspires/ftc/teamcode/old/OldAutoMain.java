@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.auto;
+package org.firstinspires.ftc.teamcode.old;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
@@ -14,7 +14,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 
 @Autonomous(name = "Don't Use!!", group = "Autonomous")
 @Disabled
-public class AutoMain extends LinearOpMode {
+public class OldAutoMain extends LinearOpMode {
 
     private DcMotor leftFront = null;
     private DcMotor leftBack = null;

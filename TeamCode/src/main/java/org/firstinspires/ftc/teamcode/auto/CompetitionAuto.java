@@ -145,10 +145,6 @@ public class CompetitionAuto extends LinearOpMode {
 
         angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
 
-        driveSmart(0,0.5,0,1500);
-        driveSmart(0.5,0,0, 2000);
-        driveDumb(0,0,0);
-
         if (opModeIsActive()) {
             while (opModeIsActive()) {
 
@@ -173,26 +169,20 @@ public class CompetitionAuto extends LinearOpMode {
                             telemetry.addData("- Size (Width/Height)","%.0f / %.0f", width, height);
 
                             if (recognition.getLabel() == "redCanada") {
-                                driveDumb(0,0.5,0);
-                                sleep(1500);
-                                driveDumb(0.5,0,0);
-                                sleep(2000);
+                                driveSmart(0,0.5,0,1500);
+                                driveSmart(0.5,0,0, 2000);
                                 driveDumb(0,0,0);
                             }
 
                             if (recognition.getLabel() == "greenFedora") {
-                                driveDumb(0,0.5,0);
-                                sleep(200);
-                                driveDumb(0.5,0,0);
-                                sleep(2000);
+                                driveSmart(0,0.5,0, 200);
+                                driveSmart(0.5,0,0, 2000);
                                 driveDumb(0,0,0);
                             }
 
                             if (recognition.getLabel() == "yellowDuck") {
-                                driveDumb(0,-0.5,0);
-                                sleep(1000);
-                                driveDumb(0.5,0,0);
-                                sleep(2000);
+                                driveSmart(0,-0.5,0, 1000);
+                                driveSmart(0.5,0,0, 2000);
                                 driveDumb(0,0,0);
                             }
                         }
