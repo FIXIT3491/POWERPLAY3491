@@ -13,8 +13,14 @@ import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 
-@TeleOp(name = "CompetitionTeleOp", group = "Competition")
-public class CompetitionTeleOp extends LinearOpMode {
+@TeleOp(name = "ScrimmageTeleOp", group = "Test")
+public class ScrimmageTeleOp extends LinearOpMode {
+
+    private final ElapsedTime runtime = new ElapsedTime();
+    Orientation lastAngles = new Orientation();
+    double globalAngle = 0;
+    BNO055IMU imu;
+    Orientation angles;
 
     private DcMotor leftFront = null;
     private DcMotor leftBack = null;
@@ -22,6 +28,7 @@ public class CompetitionTeleOp extends LinearOpMode {
     private DcMotor rightBack = null;
     private DcMotor slideExtender = null;
     private Servo grabberClaw = null;
+    private TouchSensor slideSensor = null;
 
     @Override
     public void runOpMode() {
@@ -36,6 +43,17 @@ public class CompetitionTeleOp extends LinearOpMode {
         rightBack = hardwareMap.get(DcMotor.class, "rightBack");
         slideExtender = hardwareMap.get(DcMotor.class, "slideExtender");
         grabberClaw = hardwareMap.get(Servo.class, "grabberClaw");
+        slideSensor = hardwareMap.get(TouchSensor.class, "slideSensor");
+
+        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
+        parameters.loggingEnabled = true;
+        parameters.loggingTag = "IMU";
+        parameters.mode = BNO055IMU.SensorMode.IMU;
+        parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
+        parameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
+
+        imu = hardwareMap.get(BNO055IMU.class, "imu");
+        imu.initialize(parameters);
 
         leftFront.setDirection(DcMotor.Direction.REVERSE);
         leftBack.setDirection(DcMotor.Direction.REVERSE);
@@ -56,9 +74,16 @@ public class CompetitionTeleOp extends LinearOpMode {
 
         grabberClaw.setPosition(0);
 
+        while (!isStopRequested() && !imu.isGyroCalibrated()) {
+            sleep(50);
+            idle();
+        }
+
         telemetry.addData("Status", "Waiting For Start");
         telemetry.update();
         waitForStart();
+        runtime.reset();
+        angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
 
         double axial = 0;   //how fast forward the drivers want the robot to move
         double lateral = 0; //how fast sideways the drivers want the robot to move
@@ -157,6 +182,85 @@ public class CompetitionTeleOp extends LinearOpMode {
         leftBack.setPower(leftBackPower);
         rightBack.setPower(rightBackPower);
 
+    }
+
+    //advanced driving function, used for autonomous and also driver assistance
+    public void driveSmart(double axial, double lateral, double yaw, double time) {
+
+        ElapsedTime timer = new ElapsedTime();
+
+        timer.reset();
+
+        double max, leftFrontPower, rightFrontPower, leftBackPower, rightBackPower;
+        double correction, angle, gain = .05;
+
+        do {
+            angle = getAngle();
+
+            //value may need tinkering
+            correction = (-angle + yaw) * gain;
+
+            leftFrontPower = -axial - lateral - correction;
+            rightFrontPower = -axial + lateral + correction;
+            leftBackPower = axial + lateral - correction;
+            rightBackPower = axial - lateral + correction;
+
+            max = Math.max(Math.abs(leftFrontPower), Math.abs(rightFrontPower));
+            max = Math.max(max, Math.abs(leftBackPower));
+            max = Math.max(max, Math.abs(rightBackPower));
+
+            if (max > 1.0) {
+                leftFrontPower /= max;
+                rightFrontPower /= max;
+                leftBackPower /= max;
+                rightBackPower /= max;
+            }
+
+            leftFront.setPower(leftFrontPower);
+            rightFront.setPower(rightFrontPower);
+            leftBack.setPower(leftBackPower);
+            rightBack.setPower(rightBackPower);
+
+        }
+
+        while (timer.milliseconds() <= time && opModeIsActive());
+
+    }
+
+    public void driveSmart(double axial, double lateral, double yaw) {
+        driveSmart(axial, lateral, yaw, 0);
+    }
+
+    //Resets the cumulative angle tracking to zero.
+    private void resetAngle() {
+        lastAngles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+
+        globalAngle = 0;
+    }
+
+
+    //Get current cumulative angle rotation from last reset.
+    //Angle in degrees. + = left, - = right.
+    private double getAngle() {
+        // We experimentally determined the Z axis is the axis we want to use for heading angle.
+        // We have to process the angle because the imu works in euler angles so the Z axis is
+        // returned as 0 to +180 or 0 to -180 rolling back to -179 or +179 when rotation passes
+        // 180 degrees. We detect this transition and track the total cumulative angle of rotation.
+
+        Orientation angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+
+        double deltaAngle = angles.firstAngle - lastAngles.firstAngle;
+
+        if (deltaAngle < -180)
+            deltaAngle += 360;
+        else if (deltaAngle > 180)
+            deltaAngle -= 360;
+
+        globalAngle += deltaAngle;
+
+        lastAngles = angles;
+
+        return globalAngle;
     }
 
     private void stopDrive(long ms) {

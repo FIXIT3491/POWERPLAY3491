@@ -13,7 +13,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 
-@TeleOp(name = "TestTeleOp", group = "Competition")
+@TeleOp(name = "TestTeleOp", group = "Test")
 public class TestTeleOp extends LinearOpMode {
 
     private final ElapsedTime runtime = new ElapsedTime();
