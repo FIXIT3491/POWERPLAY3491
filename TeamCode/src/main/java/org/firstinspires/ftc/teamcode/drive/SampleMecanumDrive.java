@@ -69,7 +69,7 @@ public class SampleMecanumDrive extends MecanumDrive {
 
     private TrajectoryFollower follower;
 
-    private DcMotorEx leftFront, leftRear, rightRear, rightFront;
+    private DcMotorEx leftFront, leftRear, rightRear, rightFront, slideExtender;
     private List<DcMotorEx> motors;
 
     private VoltageSensor batteryVoltageSensor;
@@ -92,6 +92,7 @@ public class SampleMecanumDrive extends MecanumDrive {
         leftRear = hardwareMap.get(DcMotorEx.class, "leftBack");
         rightRear = hardwareMap.get(DcMotorEx.class, "rightBack");
         rightFront = hardwareMap.get(DcMotorEx.class, "rightFront");
+        slideExtender = hardwareMap.get(DcMotorEx.class, "slideExtender");
 
         motors = Arrays.asList(leftFront, leftRear, rightRear, rightFront);
 
@@ -117,6 +118,13 @@ public class SampleMecanumDrive extends MecanumDrive {
         setLocalizer(new StandardTrackingWheelLocalizer(hardwareMap));
 
         trajectorySequenceRunner = new TrajectorySequenceRunner(follower, HEADING_PID);
+    }
+
+    //slide control function
+    public void extenderMove(int slidePosition) {
+        slideExtender.setTargetPosition(slidePosition);
+        slideExtender.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        slideExtender.setPower(1);
     }
 
     public TrajectoryBuilder trajectoryBuilder(Pose2d startPose) {
