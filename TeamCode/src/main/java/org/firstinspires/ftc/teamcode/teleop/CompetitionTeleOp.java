@@ -37,10 +37,10 @@ public class CompetitionTeleOp extends LinearOpMode {
         slideExtender = hardwareMap.get(DcMotor.class, "slideExtender");
         grabberClaw = hardwareMap.get(Servo.class, "grabberClaw");
 
-        leftFront.setDirection(DcMotor.Direction.REVERSE);
-        leftBack.setDirection(DcMotor.Direction.REVERSE);
-        rightFront.setDirection(DcMotor.Direction.FORWARD);
-        rightBack.setDirection(DcMotor.Direction.FORWARD);
+        leftFront.setDirection(DcMotor.Direction.FORWARD);
+        leftBack.setDirection(DcMotor.Direction.FORWARD);
+        rightFront.setDirection(DcMotor.Direction.REVERSE);
+        rightBack.setDirection(DcMotor.Direction.REVERSE);
         slideExtender.setDirection(DcMotor.Direction.REVERSE);
 
         leftFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -81,7 +81,7 @@ public class CompetitionTeleOp extends LinearOpMode {
             //Driving Control                                                                      0
             //00000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 
-            axial = -gamepad1.left_stick_y;
+            axial = gamepad1.left_stick_y;
             lateral = gamepad1.right_stick_x;
             yaw = gamepad1.left_stick_x;
 
@@ -136,8 +136,8 @@ public class CompetitionTeleOp extends LinearOpMode {
     public void driveDumb(double axial, double lateral, double yaw) {
 
         double max;
-        double leftFrontPower = -axial - lateral - yaw;
-        double rightFrontPower = -axial + lateral + yaw;
+        double leftFrontPower = axial - lateral - yaw;
+        double rightFrontPower = axial + lateral + yaw;
         double leftBackPower = axial + lateral - yaw;
         double rightBackPower = axial - lateral + yaw;
 
