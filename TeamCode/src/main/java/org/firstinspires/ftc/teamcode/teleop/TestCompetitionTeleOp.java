@@ -11,18 +11,13 @@ import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 @TeleOp(name = "TestCompetitionTeleOp", group = "test")
 public class TestCompetitionTeleOp extends LinearOpMode {
 
-    private DcMotor slideExtender = null;
     private Servo grabberClaw = null;
 
     @Override
     public void runOpMode() throws InterruptedException {
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
 
-        slideExtender = hardwareMap.get(DcMotor.class, "slideExtender");
         grabberClaw = hardwareMap.get(Servo.class, "grabberClaw");
-        slideExtender.setDirection(DcMotor.Direction.REVERSE);
-
-        drive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         telemetry.addData("Status", "Waiting For Start");
         telemetry.update();

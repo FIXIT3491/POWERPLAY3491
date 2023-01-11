@@ -114,6 +114,7 @@ public class SampleMecanumDrive extends MecanumDrive {
 
         leftFront.setDirection(DcMotor.Direction.REVERSE);
         leftRear.setDirection(DcMotor.Direction.REVERSE);
+        slideExtender.setDirection(DcMotor.Direction.REVERSE);
 
         setLocalizer(new StandardTrackingWheelLocalizer(hardwareMap));
 
