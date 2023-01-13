@@ -82,8 +82,8 @@ public class CompetitionTeleOp extends LinearOpMode {
             //00000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 
             axial = gamepad1.left_stick_y;
-            lateral = gamepad1.right_stick_x;
-            yaw = gamepad1.left_stick_x;
+            lateral = gamepad1.left_stick_x;
+            yaw = gamepad1.right_stick_x;
 
             driveDumb(axial, lateral, yaw);
 
