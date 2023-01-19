@@ -27,7 +27,7 @@ import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
  * IMPORTANT: In order to use this OpMode, you need to obtain your own Vuforia license key as
  * is explained below.
  */
-@Autonomous(name = "CompetitionAuto", group = "Test")
+@Autonomous(name = "CompetitionAuto", group = "Competition")
 public class CompetitionAuto extends LinearOpMode {
 
     private DcMotor leftFront = null;

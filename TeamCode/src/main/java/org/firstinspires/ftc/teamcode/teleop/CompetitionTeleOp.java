@@ -1,102 +1,34 @@
 package org.firstinspires.ftc.teamcode.teleop;
 
-import com.qualcomm.hardware.bosch.BNO055IMU;
+import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.hardware.TouchSensor;
-import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
-import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
-import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
+import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 
 @TeleOp(name = "CompetitionTeleOp", group = "Competition")
 public class CompetitionTeleOp extends LinearOpMode {
 
-    private DcMotor leftFront = null;
-    private DcMotor leftBack = null;
-    private DcMotor rightFront = null;
-    private DcMotor rightBack = null;
-    private DcMotor slideExtender = null;
     private Servo grabberClaw = null;
 
     @Override
-    public void runOpMode() {
+    public void runOpMode() throws InterruptedException {
+        SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
 
-        //000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
-        //Init Stuff Here                                                                          0
-        //000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
-
-        leftFront = hardwareMap.get(DcMotor.class, "leftFront");
-        leftBack = hardwareMap.get(DcMotor.class, "leftBack");
-        rightFront = hardwareMap.get(DcMotor.class, "rightFront");
-        rightBack = hardwareMap.get(DcMotor.class, "rightBack");
-        slideExtender = hardwareMap.get(DcMotor.class, "slideExtender");
         grabberClaw = hardwareMap.get(Servo.class, "grabberClaw");
-
-        leftFront.setDirection(DcMotor.Direction.FORWARD);
-        leftBack.setDirection(DcMotor.Direction.FORWARD);
-        rightFront.setDirection(DcMotor.Direction.REVERSE);
-        rightBack.setDirection(DcMotor.Direction.REVERSE);
-        slideExtender.setDirection(DcMotor.Direction.REVERSE);
-
-        leftFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        leftBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        rightFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        rightBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        slideExtender.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
-        telemetry.addData("Status", "Calibrating");
-        telemetry.update();
-
-        slideExtender.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
-        grabberClaw.setPosition(0);
 
         telemetry.addData("Status", "Waiting For Start");
         telemetry.update();
         waitForStart();
 
-        double axial = 0;   //how fast forward the drivers want the robot to move
-        double lateral = 0; //how fast sideways the drivers want the robot to move
-        double yaw = 0;     //how fast the drivers want the robot to spin
-        double direction = 0;
-        boolean auto = false;
-        while (opModeIsActive()) {
-
-            telemetry.addData("status", "Running");
-            telemetry.addData("axial", axial);
-            telemetry.addData("lateral", lateral);
-            telemetry.addData("yaw", yaw);
-            telemetry.addData("direction", direction);
-            telemetry.addData("autopilot", auto);
-            telemetry.addData("slide value", slideExtender.getCurrentPosition());
-            telemetry.addData("joystick y val 2", gamepad2.right_stick_y);
-            telemetry.update();
-
-            //00000000000000000000000000000000000000000000000000000000000000000000000000000000000000
-            //Driving Control                                                                      0
-            //00000000000000000000000000000000000000000000000000000000000000000000000000000000000000
-
-            axial = gamepad1.left_stick_y;
-            lateral = gamepad1.left_stick_x;
-            yaw = gamepad1.right_stick_x;
-
-            driveDumb(axial, lateral, yaw);
-
-            //00000000000000000000000000000000000000000000000000000000000000000000000000000000000000
-            //Mechanism Control                                                                    0
-            //00000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+        while (!isStopRequested()) {
 
             //basic grabber claw control
             if (gamepad2.left_bumper || gamepad1.left_bumper) { //close
                 grabberClaw.setPosition(0);
-            }
-
-            if (gamepad2.right_bumper || gamepad1.right_bumper) { //open
+            } else if (gamepad2.right_bumper || gamepad1.right_bumper) {
                 grabberClaw.setPosition(0.2);
             }
 
@@ -106,65 +38,34 @@ public class CompetitionTeleOp extends LinearOpMode {
             int midPole = -2830;
             int hiPole = -4000;
 
-            if (gamepad2.left_stick_y != 0) {
-                slideExtender.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-                slideExtender.setPower(gamepad2.left_stick_y);
-            }
-
             if (gamepad2.x) {
-                extenderMove(floor);
+                drive.extenderMove(floor);
 
             } else if (gamepad2.y) {
-                extenderMove(lowPole);
+                drive.extenderMove(lowPole);
 
             } else if (gamepad2.b) {
-                extenderMove(midPole);
+                drive.extenderMove(midPole);
 
             } else if (gamepad2.a)
-                extenderMove(hiPole);
+                drive.extenderMove(hiPole);
+
+            //drive control (from RR)
+            drive.setWeightedDrivePower(
+                    new Pose2d(
+                            -gamepad1.left_stick_y,
+                            -gamepad1.left_stick_x,
+                            -gamepad1.right_stick_x
+                    )
+            );
+
+            drive.update();
+
+            Pose2d poseEstimate = drive.getPoseEstimate();
+            telemetry.addData("x", poseEstimate.getX());
+            telemetry.addData("y", poseEstimate.getY());
+            telemetry.addData("heading", poseEstimate.getHeading());
+            telemetry.update();
         }
-    }
-
-    //slide control function
-    public void extenderMove(int slidePosition) {
-        slideExtender.setTargetPosition(slidePosition);
-        slideExtender.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        slideExtender.setPower(1);
-    }
-
-    //basic driving function
-    public void driveDumb(double axial, double lateral, double yaw) {
-
-        double max;
-        double leftFrontPower = axial - lateral - yaw;
-        double rightFrontPower = axial + lateral + yaw;
-        double leftBackPower = axial + lateral - yaw;
-        double rightBackPower = axial - lateral + yaw;
-
-        max = Math.max(Math.abs(leftFrontPower), Math.abs(rightFrontPower));
-        max = Math.max(max, Math.abs(leftBackPower));
-        max = Math.max(max, Math.abs(rightBackPower));
-
-        if (max > 1.0) {
-            leftFrontPower /= max;
-            rightFrontPower /= max;
-            leftBackPower /= max;
-            rightBackPower /= max;
-        }
-
-        leftFront.setPower(leftFrontPower);
-        rightFront.setPower(rightFrontPower);
-        leftBack.setPower(leftBackPower);
-        rightBack.setPower(rightBackPower);
-
-    }
-
-    private void stopDrive(long ms) {
-        driveDumb(0, 0, 0);
-        sleep(ms);
-    }
-
-    private void stopDrive() {
-        stopDrive(0);
     }
 }
