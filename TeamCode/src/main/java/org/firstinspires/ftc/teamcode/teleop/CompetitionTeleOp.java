@@ -38,6 +38,7 @@ public class CompetitionTeleOp extends LinearOpMode {
             int midPole = -2830;
             int hiPole = -4000;
 
+            //pole specific control
             if (gamepad2.x) {
                 drive.extenderMove(floor);
 
