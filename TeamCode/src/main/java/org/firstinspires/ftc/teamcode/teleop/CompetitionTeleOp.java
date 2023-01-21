@@ -11,15 +11,11 @@ import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 @TeleOp(name = "CompetitionTeleOp", group = "Competition")
 public class CompetitionTeleOp extends LinearOpMode {
 
-    private Servo grabberClaw = null;
-
     @Override
     public void runOpMode() throws InterruptedException {
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
 
-        grabberClaw = hardwareMap.get(Servo.class, "grabberClaw");
-
-        telemetry.addData("Status", "Waiting For Start");
+        telemetry.addData(">", "Ready!");
         telemetry.update();
         waitForStart();
 
@@ -27,9 +23,9 @@ public class CompetitionTeleOp extends LinearOpMode {
 
             //basic grabber claw control
             if (gamepad2.left_bumper || gamepad1.left_bumper) { //close
-                grabberClaw.setPosition(0);
+                drive.grabber(0);
             } else if (gamepad2.right_bumper || gamepad1.right_bumper) {
-                grabberClaw.setPosition(0.2);
+                drive.grabber(0.2);
             }
 
             //viper slide control

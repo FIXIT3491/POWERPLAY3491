@@ -1,21 +1,20 @@
 package org.firstinspires.ftc.teamcode.auto;
-import com.acmerobotics.roadrunner.geometry.Pose2d;
-import com.acmerobotics.roadrunner.trajectory.Trajectory;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.Servo;
 
-import java.util.List;
+import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
-import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
+import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 
-@Autonomous(name = "CompetitionAutoLeft", group = "Competition")
-public class CompetitionAutoLeft extends LinearOpMode {
+import java.util.List;
+
+@Autonomous(name = "CompetitionAutoRight", group = "Competition")
+public class CompetitionAutoRight extends LinearOpMode {
 
     private static final String TFOD_MODEL_ASSET = "CustomModelPowerplay.tflite";
     private static final String[] LABELS = {"greenFedora", "redCanada", "yellowDuck"};
@@ -38,7 +37,6 @@ public class CompetitionAutoLeft extends LinearOpMode {
 
         drive.grabber(0);
 
-        /* Wait for the game to begin */
         telemetry.addData(">", "Ready!");
         telemetry.update();
 
@@ -47,6 +45,7 @@ public class CompetitionAutoLeft extends LinearOpMode {
         Pose2d poseEstimate = drive.getPoseEstimate();
 
         if(isStopRequested()) return;
+
 
         if (opModeIsActive()) {
             while (opModeIsActive()) {
@@ -72,15 +71,15 @@ public class CompetitionAutoLeft extends LinearOpMode {
                             telemetry.addData("- Size (Width/Height)","%.0f / %.0f", width, height);
 
                             if (recognition.getLabel() == "redCanada") {
-                                drive.leftSide();
+                                drive.rightSide();
                             }
 
                             if (recognition.getLabel() == "greenFedora") {
-                                drive.leftSide();
+                                drive.rightSide();
                             }
 
                             if (recognition.getLabel() == "yellowDuck") {
-                                drive.leftSide();
+                                drive.rightSide();
                             }
                         }
                         telemetry.update();
