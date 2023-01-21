@@ -24,6 +24,7 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
 
@@ -47,14 +48,15 @@ import static org.firstinspires.ftc.teamcode.drive.DriveConstants.encoderTicksTo
 import static org.firstinspires.ftc.teamcode.drive.DriveConstants.kA;
 import static org.firstinspires.ftc.teamcode.drive.DriveConstants.kStatic;
 import static org.firstinspires.ftc.teamcode.drive.DriveConstants.kV;
+import static java.lang.Thread.sleep;
 
 /*
  * Simple mecanum drive hardware implementation for REV hardware.
  */
 @Config
 public class SampleMecanumDrive extends MecanumDrive {
-    public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(0, 0, 0);
-    public static PIDCoefficients HEADING_PID = new PIDCoefficients(0, 0, 0);
+    public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(8, 0, 0);
+    public static PIDCoefficients HEADING_PID = new PIDCoefficients(8, 0, 0);
 
     public static double LATERAL_MULTIPLIER = 1;
 
@@ -70,6 +72,7 @@ public class SampleMecanumDrive extends MecanumDrive {
     private TrajectoryFollower follower;
 
     private DcMotorEx leftFront, leftRear, rightRear, rightFront, slideExtender;
+    private Servo grabberClaw;
     private List<DcMotorEx> motors;
 
     private VoltageSensor batteryVoltageSensor;
@@ -93,6 +96,7 @@ public class SampleMecanumDrive extends MecanumDrive {
         rightRear = hardwareMap.get(DcMotorEx.class, "rightBack");
         rightFront = hardwareMap.get(DcMotorEx.class, "rightFront");
         slideExtender = hardwareMap.get(DcMotorEx.class, "slideExtender");
+        grabberClaw = hardwareMap.get(Servo.class, "grabberClaw");
 
         motors = Arrays.asList(leftFront, leftRear, rightRear, rightFront);
 
@@ -120,14 +124,78 @@ public class SampleMecanumDrive extends MecanumDrive {
 
         trajectorySequenceRunner = new TrajectorySequenceRunner(follower, HEADING_PID);
     }
+    //auton methods
+    public void leftSide() throws InterruptedException {
+        Trajectory leftSideStrafeRight = trajectoryBuilder(new Pose2d())
+                .strafeRight(10)
+                .build();
+        Trajectory forward = trajectoryBuilder(leftSideStrafeRight.end())
+                .forward(9.5)
+                .build();
+        Trajectory back = trajectoryBuilder(forward.end())
+                .back(9)
+                .build();
+        grabberClaw.setPosition(0);
+        //track right 10 inches
+        followTrajectory(leftSideStrafeRight);
+        //move slide upwards to low junction
+        extenderMove(-1630);
+        //wait for slide to move...
+        sleep(500);
+        //track forwards 9.5 inches
+        followTrajectory(forward);
+        //wait...
+        sleep(500);
+        //open claw
+        grabberClaw.setPosition(0.2);
+        //track backwards 9 inches
+        followTrajectory(back);
+        //retract slide to floor
+        extenderMove(0);
+    }
 
-    //slide control function
+    public void rightSide() throws InterruptedException {
+        Trajectory rightSideStrafeLeft = trajectoryBuilder(new Pose2d())
+                .strafeLeft(18)
+                .build();
+        Trajectory forward = trajectoryBuilder(rightSideStrafeLeft.end())
+                .forward(9.5)
+                .build();
+        Trajectory back = trajectoryBuilder(forward.end())
+                .back(9)
+                .build();
+        grabberClaw.setPosition(0);
+        //track left 20 inches
+        followTrajectory(rightSideStrafeLeft);
+        //move slide upwards to low junction
+        extenderMove(-1630);
+        //wait for slide to move...
+        sleep(500);
+        //track forwards 9.5 inches
+        followTrajectory(forward);
+        //wait...
+        sleep(500);
+        //open claw
+        grabberClaw.setPosition(0.2);
+        //track backwards 9 inches
+        followTrajectory(back);
+        //retract slide to floor
+        extenderMove(0);
+    }
+
+    //claw control method
+    public void grabber(double grabberPosition) {
+        grabberClaw.setPosition(grabberPosition);
+    }
+
+    //slide control method
     public void extenderMove(int slidePosition) {
         slideExtender.setTargetPosition(slidePosition);
         slideExtender.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         slideExtender.setPower(1);
     }
 
+    //RR methods
     public TrajectoryBuilder trajectoryBuilder(Pose2d startPose) {
         return new TrajectoryBuilder(startPose, VEL_CONSTRAINT, ACCEL_CONSTRAINT);
     }
