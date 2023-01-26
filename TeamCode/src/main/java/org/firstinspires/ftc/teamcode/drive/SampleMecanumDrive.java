@@ -130,10 +130,13 @@ public class SampleMecanumDrive extends MecanumDrive {
                 .strafeRight(10)
                 .build();
         Trajectory forward = trajectoryBuilder(leftSideStrafeRight.end())
-                .forward(9.5)
+                .forward(11)
                 .build();
         Trajectory back = trajectoryBuilder(forward.end())
                 .back(9)
+                .build();
+        Trajectory leftSideStrafeLeft = trajectoryBuilder(back.end())
+                .strafeLeft(13)
                 .build();
         grabberClaw.setPosition(0);
         //track right 10 inches
@@ -152,17 +155,27 @@ public class SampleMecanumDrive extends MecanumDrive {
         followTrajectory(back);
         //retract slide to floor
         extenderMove(0);
+        followTrajectory(leftSideStrafeLeft);
     }
+    public void two() {
+        Trajectory forward = trajectoryBuilder((new Pose2d()))
+                .forward(25)
+                .build();
+        followTrajectory(forward);
 
+    }
     public void rightSide() throws InterruptedException {
         Trajectory rightSideStrafeLeft = trajectoryBuilder(new Pose2d())
                 .strafeLeft(18)
                 .build();
         Trajectory forward = trajectoryBuilder(rightSideStrafeLeft.end())
-                .forward(9.5)
+                .forward(11)
                 .build();
         Trajectory back = trajectoryBuilder(forward.end())
                 .back(9)
+                .build();
+        Trajectory rightSideStrafeRight = trajectoryBuilder(back.end())
+                .strafeRight(8)
                 .build();
         grabberClaw.setPosition(0);
         //track left 20 inches
@@ -181,6 +194,8 @@ public class SampleMecanumDrive extends MecanumDrive {
         followTrajectory(back);
         //retract slide to floor
         extenderMove(0);
+        //move back to 1 inch above original spot
+        followTrajectory(rightSideStrafeRight);
     }
 
     //claw control method

@@ -17,7 +17,7 @@ import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 @Autonomous(name = "CompetitionAutoLeft", group = "Competition")
 public class CompetitionAutoLeft extends LinearOpMode {
 
-    private static final String TFOD_MODEL_ASSET = "CustomModelPowerplay.tflite";
+    private static final String TFOD_MODEL_ASSET = "Model1.tflite";
     private static final String[] LABELS = {"greenFedora", "redCanada", "yellowDuck"};
     private static final String VUFORIA_KEY = "ATU9MNz/////AAABmdp9yZ8JdEGjpiGfxU8g64YjAQPwRcIIIqytyWu9HmjEkTELwI1JsCtkFv/I4k2S8KXjgWFB61R+GwLPvY3T1EyQmpV/UFfaSEqcJLpT++NbMjv5JkXg3JG92Ga+RnHYS3WaTBgRZexhqar4QNK4exrzUQUJjy2ntF2Afb+ENqH4glLQW85aM0BA4+8WMjcplpZ5WbhJ82ruz0ikcpy8bffFnhd+pN1/xficoB/Szcx5lt1SmKzVjbYkktmVd8qS6qGd8yVH1DydPQlP6njcUDllIc1a3oAO5zmWTFoxfaknDOm2bXka6V2Qht6pD7pl1tSP3vgeCZPM0fKSowfy0MoFVzsuuBvwqloB4Obt4NDT";
     private VuforiaLocalizer vuforia;
@@ -72,15 +72,22 @@ public class CompetitionAutoLeft extends LinearOpMode {
                             telemetry.addData("- Size (Width/Height)","%.0f / %.0f", width, height);
 
                             if (recognition.getLabel() == "redCanada") {
+                                tfod.deactivate();
                                 drive.leftSide();
+                                //drive.one();
                             }
 
                             if (recognition.getLabel() == "greenFedora") {
+                                tfod.deactivate();
                                 drive.leftSide();
+                                sleep(200);
+                                drive.two();
                             }
 
                             if (recognition.getLabel() == "yellowDuck") {
+                                tfod.deactivate();
                                 drive.leftSide();
+                                //drive.three();
                             }
                         }
                         telemetry.update();

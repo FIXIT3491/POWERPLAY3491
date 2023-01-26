@@ -47,9 +47,19 @@ public class CompetitionTeleOp extends LinearOpMode {
 
             //driver 1 lower slide functionality
             if (gamepad1.left_trigger > 0) {
-                slidePosition = slidePosition + 200;
+                slidePosition = slidePosition + 400;
+                sleep(500);
             } else if (gamepad1.right_trigger > 0) {
-                slidePosition = slidePosition - 200;
+                slidePosition = slidePosition - 400;
+                sleep(500);
+            }
+
+            if (gamepad2.left_trigger > 0) {
+                slidePosition = slidePosition + 400;
+                sleep(500);
+            } else if (gamepad2.right_trigger > 0) {
+                slidePosition = slidePosition - 400;
+                sleep(500);
             }
 
             //prevent the slide from over-extending/over-retracting
