@@ -74,7 +74,7 @@ public class CompetitionAutoLeft extends LinearOpMode {
                             if (recognition.getLabel() == "redCanada") {
                                 tfod.deactivate();
                                 drive.leftSide();
-                                //drive.one();
+                                drive.one();
                             }
 
                             if (recognition.getLabel() == "greenFedora") {
@@ -87,7 +87,7 @@ public class CompetitionAutoLeft extends LinearOpMode {
                             if (recognition.getLabel() == "yellowDuck") {
                                 tfod.deactivate();
                                 drive.leftSide();
-                                //drive.three();
+                                drive.three();
                             }
                         }
                         telemetry.update();
