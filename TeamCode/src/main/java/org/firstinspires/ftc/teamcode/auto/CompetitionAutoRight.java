@@ -110,11 +110,11 @@ public class CompetitionAutoRight extends LinearOpMode {
                                 drive.three();
                             }
                         }
-                        tfod.deactivate();
-                        drive.rightSide();
-                        drive.three();
-                        telemetry.update();
                     }
+                    tfod.deactivate();
+                    drive.rightSide();
+                    drive.three();
+                    telemetry.update();
                 }
             }
         }
