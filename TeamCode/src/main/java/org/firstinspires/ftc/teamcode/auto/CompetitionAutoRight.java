@@ -56,7 +56,7 @@ public class CompetitionAutoRight extends LinearOpMode {
                     List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
                     if (updatedRecognitions != null) {
                         telemetry.addData("# Objects Detected", updatedRecognitions.size());
-                        String label = "default";
+                        String label = null;
                         // step through the list of recognitions and display image position/size information for each one
                         // Note: "Image number" refers to the randomized image orientation/number
                         for (Recognition recognition : updatedRecognitions) {
@@ -109,15 +109,10 @@ public class CompetitionAutoRight extends LinearOpMode {
                                 drive.rightSide();
                                 drive.three();
                             }
-
-                            if (label == "default") {
-                                tfod.deactivate();
-                                drive.rightSide();
-                                drive.three();
-                            }
-
-
                         }
+                        tfod.deactivate();
+                        drive.rightSide();
+                        drive.three();
                         telemetry.update();
                     }
                 }
