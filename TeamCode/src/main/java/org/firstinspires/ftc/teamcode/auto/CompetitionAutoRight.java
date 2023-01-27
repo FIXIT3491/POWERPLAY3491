@@ -73,50 +73,50 @@ public class CompetitionAutoRight extends LinearOpMode {
                             telemetry.addData("- Position (Row/Col)","%.0f / %.0f", row, col);
                             telemetry.addData("- Size (Width/Height)","%.0f / %.0f", width, height);
 
-                            if (recognition.getLabel() == "redCanada") {
-                                label = "redCanada";
-                                //tfod.deactivate();
-                                //drive.rightSide();
-                                //drive.one();
-                            }
-
-                            if (recognition.getLabel() == "greenFedora") {
-                                label = "greenFedora";
-                                //tfod.deactivate();
-                                //drive.rightSide();
-                                //drive.two();
-                            }
-
-                            if (recognition.getLabel() == "yellowDuck") {
-                                label = "yellowDuck";
-                                //tfod.deactivate();
-                                //drive.rightSide();
-                                //drive.three();
-                            }
-
-                            if (label == "redCanada") {
-                                tfod.deactivate();
-                                drive.rightSide();
-                                drive.one();
-                            }
-
-                            if (label == "greenFedora") {
-                                tfod.deactivate();
-                                drive.rightSide();
-                                drive.two();
-                            }
-
-                            if (label == "yellowDuck") {
-                                tfod.deactivate();
-                                drive.rightSide();
-                                drive.three();
-                            }
-
-                            if (label == "default") {
-                                tfod.deactivate();
-                                drive.rightSide();
-                                drive.three();
-                            }
+//                            if (recognition.getLabel() == "redCanada") {
+//                                label = "redCanada";
+//                                //tfod.deactivate();
+//                                //drive.rightSide();
+//                                //drive.one();
+//                            }
+//
+//                            if (recognition.getLabel() == "greenFedora") {
+//                                label = "greenFedora";
+//                                //tfod.deactivate();
+//                                //drive.rightSide();
+//                                //drive.two();
+//                            }
+//
+//                            if (recognition.getLabel() == "yellowDuck") {
+//                                label = "yellowDuck";
+//                                //tfod.deactivate();
+//                                //drive.rightSide();
+//                                //drive.three();
+//                            }
+//
+//                            if (label == "redCanada") {
+//                                tfod.deactivate();
+//                                drive.rightSide();
+//                                drive.one();
+//                            }
+//
+//                            if (label == "greenFedora") {
+//                                tfod.deactivate();
+//                                drive.rightSide();
+//                                drive.two();
+//                            }
+//
+//                            if (label == "yellowDuck") {
+//                                tfod.deactivate();
+//                                drive.rightSide();
+//                                drive.three();
+//                            }
+//
+//                            if (label == "default") {
+//                                tfod.deactivate();
+//                                drive.rightSide();
+//                                drive.three();
+//                            }
 
 
                         }
