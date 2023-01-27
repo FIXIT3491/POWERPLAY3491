@@ -88,9 +88,9 @@ public class CompetitionAutoRight extends LinearOpMode {
 
                             if (recognition.getLabel() == "yellowDuck") {
                                 label = "yellowDuck";
-                                tfod.deactivate();
-                                drive.rightSide();
-                                drive.three();
+                                //tfod.deactivate();
+                                //drive.rightSide();
+                                //drive.three();
                             }
 
                             if (label == "redCanada") {
