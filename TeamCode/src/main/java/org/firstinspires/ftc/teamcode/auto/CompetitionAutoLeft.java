@@ -72,18 +72,21 @@ public class CompetitionAutoLeft extends LinearOpMode {
                                 tfod.deactivate();
                                 drive.leftSide();
                                 drive.one();
+                                sleep(30000);
                             }
 
                             if (recognition.getLabel() == "greenFedora") {
                                 tfod.deactivate();
                                 drive.leftSide();
                                 drive.two();
+                                sleep(30000);
                             }
 
                             if (recognition.getLabel() == "yellowDuck") {
                                 tfod.deactivate();
                                 drive.leftSide();
                                 drive.three();
+                                sleep(30000);
                             }
                         }
                         telemetry.update();
