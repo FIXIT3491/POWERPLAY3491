@@ -57,9 +57,6 @@ public class CompetitionAutoLeft extends LinearOpMode {
                     List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
                     if (updatedRecognitions != null) {
                         telemetry.addData("# Objects Detected", updatedRecognitions.size());
-
-                        // step through the list of recognitions and display image position/size information for each one
-                        // Note: "Image number" refers to the randomized image orientation/number
                         for (Recognition recognition : updatedRecognitions) {
                             double col = (recognition.getLeft() + recognition.getRight()) / 2 ;
                             double row = (recognition.getTop()  + recognition.getBottom()) / 2 ;
@@ -80,7 +77,6 @@ public class CompetitionAutoLeft extends LinearOpMode {
                             if (recognition.getLabel() == "greenFedora") {
                                 tfod.deactivate();
                                 drive.leftSide();
-                                sleep(200);
                                 drive.two();
                             }
 

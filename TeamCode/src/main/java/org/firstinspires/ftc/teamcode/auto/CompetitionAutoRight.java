@@ -56,11 +56,7 @@ public class CompetitionAutoRight extends LinearOpMode {
                     List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
                     if (updatedRecognitions != null) {
                         telemetry.addData("# Objects Detected", updatedRecognitions.size());
-                        String label = null;
-                        // step through the list of recognitions and display image position/size information for each one
-                        // Note: "Image number" refers to the randomized image orientation/number
                         for (Recognition recognition : updatedRecognitions) {
-
                             double col = (recognition.getLeft() + recognition.getRight()) / 2 ;
                             double row = (recognition.getTop()  + recognition.getBottom()) / 2 ;
                             double width  = Math.abs(recognition.getRight() - recognition.getLeft()) ;
@@ -72,53 +68,25 @@ public class CompetitionAutoRight extends LinearOpMode {
                             telemetry.addData("- Size (Width/Height)","%.0f / %.0f", width, height);
 
                             if (recognition.getLabel() == "redCanada") {
-                                label = "redCanada";
-                                //tfod.deactivate();
-                                //drive.rightSide();
-                                //drive.one();
-                            }
-
-                            if (recognition.getLabel() == "greenFedora") {
-                                label = "greenFedora";
-                                //tfod.deactivate();
-                                //drive.rightSide();
-                                //drive.two();
-                            }
-
-                            if (recognition.getLabel() == "yellowDuck") {
-                                label = "yellowDuck";
-                                //tfod.deactivate();
-                                //drive.rightSide();
-                                //drive.three();
-                            }
-
-                            if (label == "redCanada") {
                                 tfod.deactivate();
                                 drive.rightSide();
                                 drive.one();
-                                sleep(200000);
                             }
 
-                            if (label == "greenFedora") {
+                            if (recognition.getLabel() == "greenFedora") {
                                 tfod.deactivate();
                                 drive.rightSide();
                                 drive.two();
-                                sleep(200000);
                             }
 
-                            if (label == "yellowDuck") {
+                            if (recognition.getLabel() == "yellowDuck") {
                                 tfod.deactivate();
                                 drive.rightSide();
                                 drive.three();
-                                sleep(200000);
                             }
                         }
+                        telemetry.update();
                     }
-                    tfod.deactivate();
-                    drive.rightSide();
-                    drive.three();
-                    sleep(200000);
-                    telemetry.update();
                 }
             }
         }
