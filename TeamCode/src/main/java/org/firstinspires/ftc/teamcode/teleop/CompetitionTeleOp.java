@@ -5,17 +5,26 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.TouchSensor;
 
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 
 @TeleOp(name = "CompetitionTeleOp", group = "Competition")
 public class CompetitionTeleOp extends LinearOpMode {
 
+    private TouchSensor liftLimit;
+
     @Override
     public void runOpMode() throws InterruptedException {
+
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
 
+        //sensors, cuz I can't figure out how to add them to SMD
+        liftLimit = hardwareMap.get(TouchSensor.class, "liftLimit");
+
         int slidePosition = 0;
+
+        drive.extenderZero();
 
         telemetry.addData(">", "Ready!");
         telemetry.update();
@@ -30,10 +39,14 @@ public class CompetitionTeleOp extends LinearOpMode {
                 drive.grabber(0.2);
             }
 
+            //move the slide
             drive.extenderMove(slidePosition);
 
-            //pole specific control
+            //change where the slide moves
             if (gamepad2.x) {
+                while (!liftLimit.isPressed()) {
+                    drive.extenderRetract(1);
+                }
                 slidePosition = 0;
 
             } else if (gamepad2.y) {
@@ -42,8 +55,18 @@ public class CompetitionTeleOp extends LinearOpMode {
             } else if (gamepad2.b) {
                 slidePosition = -2830;
 
-            } else if (gamepad2.a)
+            } else if (gamepad2.a) {
                 slidePosition = -4000;
+            } else if (liftLimit.isPressed()) {
+                drive.extenderZero();
+            }
+
+            //joystick control driver 2
+            if (gamepad2.left_stick_y > 0) {
+                slidePosition = slidePosition -10;
+            } else if (gamepad1.left_stick_y < 0)
+                slidePosition = slidePosition +10;
+
 
             //driver 1 lower slide functionality
             if (gamepad1.left_trigger > 0) {

@@ -25,6 +25,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.TouchSensor;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
 
@@ -49,6 +50,9 @@ import static org.firstinspires.ftc.teamcode.drive.DriveConstants.kA;
 import static org.firstinspires.ftc.teamcode.drive.DriveConstants.kStatic;
 import static org.firstinspires.ftc.teamcode.drive.DriveConstants.kV;
 import static java.lang.Thread.sleep;
+
+import android.hardware.Sensor;
+import android.text.method.Touch;
 
 /*
  * Simple mecanum drive hardware implementation for REV hardware.
@@ -229,11 +233,20 @@ public class SampleMecanumDrive extends MecanumDrive {
         grabberClaw.setPosition(grabberPosition);
     }
 
-    //slide control method
+    //slide control methods
+    public void extenderZero() {
+            slideExtender.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+    }
+
     public void extenderMove(int slidePosition) {
-        slideExtender.setTargetPosition(slidePosition);
         slideExtender.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        slideExtender.setTargetPosition(slidePosition);
         slideExtender.setPower(1);
+    }
+
+    public void extenderRetract(double speed) {
+        slideExtender.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        slideExtender.setPower(speed);
     }
 
     //RR methods
