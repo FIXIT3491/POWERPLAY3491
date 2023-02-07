@@ -45,7 +45,7 @@ public class CompetitionTeleOp extends LinearOpMode {
             //change where the slide moves
             if (gamepad2.x) {
                 while (!liftLimit.isPressed()) {
-                    drive.extenderRetract(1);
+                    drive.extenderRetract(0.6);
                 }
                 slidePosition = 0;
 
@@ -91,27 +91,6 @@ public class CompetitionTeleOp extends LinearOpMode {
             } else if (slidePosition < -4000) {
                 slidePosition = -4000;
             }
-
-            //variable slide control using joystick v1
-
-//            //viper slide control - CTRL + / to uncomment
-//            int floor = 0;
-//            int lowPole = -1630;
-//            int midPole = -2830;
-//            int hiPole = -4000;
-//
-//            //pole specific control
-//            if (gamepad2.x) {
-//                drive.extenderMove(floor);
-//
-//            } else if (gamepad2.y) {
-//                drive.extenderMove(lowPole);
-//
-//            } else if (gamepad2.b) {
-//                drive.extenderMove(midPole);
-//
-//            } else if (gamepad2.a)
-//                drive.extenderMove(hiPole);
 
             //drive control (from RR)
             drive.setWeightedDrivePower(

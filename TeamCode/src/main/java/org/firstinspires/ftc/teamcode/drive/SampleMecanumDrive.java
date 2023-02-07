@@ -235,12 +235,12 @@ public class SampleMecanumDrive extends MecanumDrive {
 
     //slide control methods
     public void extenderZero() {
-            slideExtender.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        slideExtender.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
     }
 
     public void extenderMove(int slidePosition) {
-        slideExtender.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         slideExtender.setTargetPosition(slidePosition);
+        slideExtender.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         slideExtender.setPower(1);
     }
 
