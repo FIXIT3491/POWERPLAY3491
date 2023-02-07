@@ -36,7 +36,7 @@ public class CompetitionTeleOp extends LinearOpMode {
             if (gamepad2.left_bumper || gamepad1.left_bumper) { //close
                 drive.grabber(0);
             } else if (gamepad2.right_bumper || gamepad1.right_bumper) { //open
-                drive.grabber(0.2);
+                drive.grabber(0.15);
             }
 
             //move the slide
@@ -63,9 +63,9 @@ public class CompetitionTeleOp extends LinearOpMode {
 
             //joystick control driver 2
             if (gamepad2.left_stick_y > 0) {
-                slidePosition = slidePosition -10;
-            } else if (gamepad1.left_stick_y < 0)
                 slidePosition = slidePosition +10;
+            } else if (gamepad2.left_stick_y < 0)
+                slidePosition = slidePosition -10;
 
 
             //driver 1 lower slide functionality
