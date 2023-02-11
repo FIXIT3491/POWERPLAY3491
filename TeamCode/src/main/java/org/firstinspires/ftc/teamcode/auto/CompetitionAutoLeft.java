@@ -99,11 +99,12 @@ public class CompetitionAutoLeft extends LinearOpMode {
 
         //auton code here
 
-        if (aprilCode == 0) {
+        if (aprilCode == 0) { //use this for testing RR stuff
             telemetry.addLine("No tag in sight");
             telemetry.update();
+            drive.extenderZero();
             drive.leftSide();
-            drive.three();
+            drive.leftSideStack();
 
         } else {
             telemetry.addData("April Code", aprilCode);
@@ -113,13 +114,13 @@ public class CompetitionAutoLeft extends LinearOpMode {
 
             if (zone == 1) {
                 drive.leftSide();
-                drive.one();
+                //drive.one();
             } else if (zone == 2) {
                 drive.leftSide();
-                drive.two();
+                //drive.two();
             } else if (zone == 3) {
                 drive.leftSide();
-                drive.three();
+                //drive.three();
             }
         }
     }

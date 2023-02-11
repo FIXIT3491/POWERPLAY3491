@@ -9,6 +9,7 @@ import com.acmerobotics.roadrunner.drive.MecanumDrive;
 import com.acmerobotics.roadrunner.followers.HolonomicPIDVAFollower;
 import com.acmerobotics.roadrunner.followers.TrajectoryFollower;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.acmerobotics.roadrunner.trajectory.TrajectoryBuilder;
 import com.acmerobotics.roadrunner.trajectory.constraints.AngularVelocityConstraint;
@@ -130,8 +131,12 @@ public class SampleMecanumDrive extends MecanumDrive {
     }
     //auton methods
     public void leftSide() throws InterruptedException {
-        Trajectory leftSideStrafeRight = trajectoryBuilder(new Pose2d())
-                .strafeRight(10)
+
+        Pose2d startPose = new Pose2d(-30, -64.5, Math.toRadians(90));
+        setPoseEstimate(startPose);
+
+        Trajectory leftSideStrafeRight = trajectoryBuilder(startPose)
+                .strafeRight(7)
                 .build();
         Trajectory forward = trajectoryBuilder(leftSideStrafeRight.end())
                 .forward(11)
@@ -140,7 +145,7 @@ public class SampleMecanumDrive extends MecanumDrive {
                 .back(9)
                 .build();
         Trajectory leftSideStrafeLeft = trajectoryBuilder(back.end())
-                .strafeLeft(13)
+                .strafeLeft(11.75)
                 .build();
         grabberClaw.setPosition(0);
         //track right 10 inches
@@ -149,18 +154,35 @@ public class SampleMecanumDrive extends MecanumDrive {
         extenderMove(-1630);
         //wait for slide to move...
         sleep(500);
-        //track forwards 9.5 inches
         followTrajectory(forward);
         //wait...
         sleep(500);
         //open claw
-        grabberClaw.setPosition(0.2);
-        //track backwards 9 inches
+        grabberClaw.setPosition(0.15);
         followTrajectory(back);
         //retract slide to floor
         extenderMove(0);
         followTrajectory(leftSideStrafeLeft);
         setPoseEstimate(new Pose2d());
+    }
+
+    public void leftSideStack() throws InterruptedException {
+        Pose2d startPose = new Pose2d(-35.5, -62.5, Math.toRadians(90));
+        setPoseEstimate(startPose);
+
+        Trajectory goToStack = trajectoryBuilder(startPose)
+                .splineTo(new Vector2d(-35.5, -14), Math.toRadians(90))
+                .splineTo(new Vector2d(-61, -13), Math.toRadians(180))
+                .build();
+        Trajectory forward4 = trajectoryBuilder(goToStack.end())
+                .forward(4)
+                .build();
+        //actions
+        followTrajectory(goToStack);
+        extenderMove(-600);
+        followTrajectory(forward4);
+        grabber(0);
+        extenderMove(-1630);
     }
 
     public void one() {
