@@ -175,14 +175,21 @@ public class SampleMecanumDrive extends MecanumDrive {
                 .splineTo(new Vector2d(-61, -13), Math.toRadians(180))
                 .build();
         Trajectory forward4 = trajectoryBuilder(goToStack.end())
-                .forward(4)
+                .forward(6)
+                .build();
+        Trajectory back = trajectoryBuilder(forward4.end())
+                .back(16)
                 .build();
         //actions
         followTrajectory(goToStack);
         extenderMove(-600);
+        sleep(500);
         followTrajectory(forward4);
         grabber(0);
+        sleep(500);
         extenderMove(-1630);
+        sleep(500);
+        followTrajectory(back);
     }
 
     public void one() {
