@@ -246,7 +246,7 @@ public class SampleMecanumDrive extends MecanumDrive {
                 .build();
 
         Trajectory approachStack2 = trajectoryBuilder(approachStack1.end().plus(new Pose2d(0, 0, Math.toRadians(-90))))
-                .forward(48)
+                .forward(47)
                 .build();
 
         Trajectory forwardStack = trajectoryBuilder(approachStack2.end())
