@@ -132,130 +132,190 @@ public class SampleMecanumDrive extends MecanumDrive {
     //auton methods
     public void leftSide() throws InterruptedException {
 
-        Pose2d startPose = new Pose2d(-30, -64.5, Math.toRadians(90));
+        Pose2d startPose = new Pose2d(-32, -65, Math.toRadians(90));
+
         setPoseEstimate(startPose);
 
         Trajectory leftSideStrafeRight = trajectoryBuilder(startPose)
-                .strafeRight(7)
+                .strafeRight(6.5)
                 .build();
+
         Trajectory forward = trajectoryBuilder(leftSideStrafeRight.end())
                 .forward(11)
                 .build();
+
         Trajectory back = trajectoryBuilder(forward.end())
                 .back(9)
                 .build();
-        Trajectory leftSideStrafeLeft = trajectoryBuilder(back.end())
-                .strafeLeft(11.75)
-                .build();
-        grabberClaw.setPosition(0);
-        //track right 10 inches
-        followTrajectory(leftSideStrafeRight);
-        //move slide upwards to low junction
-        extenderMove(-1630);
-        //wait for slide to move...
-        sleep(500);
-        followTrajectory(forward);
-        //wait...
-        sleep(500);
-        //open claw
-        grabberClaw.setPosition(0.15);
-        followTrajectory(back);
-        //retract slide to floor
-        extenderMove(0);
-        followTrajectory(leftSideStrafeLeft);
-        setPoseEstimate(new Pose2d());
-    }
 
-    public void leftSideStack() throws InterruptedException {
-        Pose2d startPose = new Pose2d(-35.5, -62.5, Math.toRadians(90));
-        setPoseEstimate(startPose);
-
-        Trajectory goToStack = trajectoryBuilder(startPose)
-                .splineTo(new Vector2d(-35.5, -14), Math.toRadians(90))
-                .splineTo(new Vector2d(-61, -13), Math.toRadians(180))
+        Trajectory strafeRight = trajectoryBuilder(back.end())
+                .strafeRight(11.625)
                 .build();
-        Trajectory forward4 = trajectoryBuilder(goToStack.end())
+
+        Trajectory approachStack = trajectoryBuilder(strafeRight.end())
+                .forward(35)
+                .splineTo(new Vector2d(-60, -12), Math.toRadians(180))
+                .build();
+
+        Trajectory forwardStack = trajectoryBuilder(approachStack.end())
                 .forward(6)
                 .build();
-        Trajectory back = trajectoryBuilder(forward4.end())
+
+        Trajectory backStack = trajectoryBuilder(forwardStack.end())
                 .back(16)
                 .build();
-        //actions
-        followTrajectory(goToStack);
-        extenderMove(-600);
-        sleep(500);
-        followTrajectory(forward4);
-        grabber(0);
-        sleep(500);
+
+        Trajectory forwardsPole = trajectoryBuilder(backStack.end().plus(new Pose2d(0, 0, Math.toRadians(90))))
+                .forward(7)
+                .build();
+
+        Trajectory backPole = trajectoryBuilder(forwardsPole.end())
+                .back(7)
+                .build();
+
+        Trajectory position = trajectoryBuilder(backPole.end())
+                .strafeLeft(11.625)
+                .build();
+
+
+
+
+
+        grabberClaw.setPosition(0);
+        followTrajectory(leftSideStrafeRight);
         extenderMove(-1630);
         sleep(500);
+        followTrajectory(forward);
+        sleep(500);
+        grabberClaw.setPosition(0.15);
         followTrajectory(back);
+        extenderMove(0);
+        sleep(500);
+        followTrajectory(strafeRight);
+        followTrajectory(approachStack);
+        extenderMove(-650);
+        sleep(500);
+        followTrajectory(forwardStack);
+        grabberClaw.setPosition(0);
+        sleep(500);
+        extenderMove(-1650);
+        sleep(500);
+        followTrajectory(backStack);
+        turn(Math.toRadians(90));
+        followTrajectory(forwardsPole);
+        grabberClaw.setPosition(0.15);
+        sleep(500);
+        followTrajectory(backPole);
+        followTrajectory(position);
+        extenderMove(0);
+        sleep(500);
+
+
+
     }
 
+    public void rightSide() throws InterruptedException {
+        Pose2d startPose = new Pose2d(42, -65, Math.toRadians(90));
+
+        setPoseEstimate(startPose);
+
+        Trajectory leftSideStrafeLeft = trajectoryBuilder(startPose)
+                .strafeLeft(16.5)
+                .build();
+
+        Trajectory forward = trajectoryBuilder(leftSideStrafeLeft.end())
+                .forward(11)
+                .build();
+
+        Trajectory back = trajectoryBuilder(forward.end())
+                .back(9)
+                .build();
+
+        Trajectory strafeLeft = trajectoryBuilder(back.end())
+                .strafeLeft(11.625)
+                .build();
+
+        Trajectory approachStack = trajectoryBuilder(strafeLeft.end())
+                .forward(35)
+                .splineTo(new Vector2d(60, -12), Math.toRadians(0))
+                .build();
+
+        Trajectory forwardStack = trajectoryBuilder(approachStack.end())
+                .forward(6)
+                .build();
+
+        Trajectory backStack = trajectoryBuilder(forwardStack.end())
+                .back(16)
+                .build();
+
+        Trajectory forwardsPole = trajectoryBuilder(backStack.end().plus(new Pose2d(0, 0, Math.toRadians(-90))))
+                .forward(7)
+                .build();
+
+        Trajectory backPole = trajectoryBuilder(forwardsPole.end())
+                .back(7)
+                .build();
+
+        Trajectory position = trajectoryBuilder(backPole.end())
+                .strafeRight(11.625)
+                .build();
+
+
+
+
+
+        grabberClaw.setPosition(0);
+        followTrajectory(leftSideStrafeLeft);
+        extenderMove(-1630);
+        sleep(500);
+        followTrajectory(forward);
+        sleep(500);
+        grabberClaw.setPosition(0.15);
+        followTrajectory(back);
+        extenderMove(0);
+        sleep(500);
+        followTrajectory(strafeLeft);
+        followTrajectory(approachStack);
+        extenderMove(-650);
+        sleep(500);
+        followTrajectory(forwardStack);
+        grabberClaw.setPosition(0);
+        sleep(500);
+        extenderMove(-1650);
+        sleep(500);
+        followTrajectory(backStack);
+        turn(Math.toRadians(270));
+        followTrajectory(forwardsPole);
+        grabberClaw.setPosition(0.15);
+        sleep(500);
+        followTrajectory(backPole);
+        followTrajectory(position);
+        extenderMove(0);
+        sleep(500);
+    }
+
+
+    //zone methods
     public void one() {
-        Trajectory left = trajectoryBuilder((new Pose2d()))
-                .strafeLeft(25)
-                .build();
-        Trajectory forward = trajectoryBuilder((left.end()))
-                .forward(25)
-                .build();
-        followTrajectory(left);
-        followTrajectory(forward);
-    }
-
-    public void two() {
-        Trajectory forward = trajectoryBuilder((new Pose2d()))
-                .forward(25)
-                .build();
-        followTrajectory(forward);
-
-    }
-
-    public void three() {
-
+        setPoseEstimate(new Pose2d());
         Trajectory right = trajectoryBuilder((new Pose2d()))
                 .strafeRight(25)
                 .build();
-        Trajectory forward = trajectoryBuilder((right.end()))
-                .forward(25)
-                .build();
         followTrajectory(right);
-        followTrajectory(forward);
     }
-    public void rightSide() throws InterruptedException {
-        Trajectory rightSideStrafeLeft = trajectoryBuilder(new Pose2d())
-                .strafeLeft(18)
-                .build();
-        Trajectory forward = trajectoryBuilder(rightSideStrafeLeft.end())
-                .forward(11)
-                .build();
-        Trajectory back = trajectoryBuilder(forward.end())
-                .back(9)
-                .build();
-        Trajectory rightSideStrafeRight = trajectoryBuilder(back.end())
-                .strafeRight(13)
-                .build();
-        grabberClaw.setPosition(0);
-        //track left 20 inches
-        followTrajectory(rightSideStrafeLeft);
-        //move slide upwards to low junction
-        extenderMove(-1630);
-        //wait for slide to move...
+
+    public void two() throws InterruptedException {
         sleep(500);
-        //track forwards 9.5 inches
-        followTrajectory(forward);
-        //wait...
-        sleep(500);
-        //open claw
-        grabberClaw.setPosition(0.2);
-        //track backwards 9 inches
-        followTrajectory(back);
-        //retract slide to floor
-        extenderMove(0);
-        //move back to 1 inch above original spot
-        followTrajectory(rightSideStrafeRight);
+    }
+
+    public void three() {
         setPoseEstimate(new Pose2d());
+        Trajectory left = trajectoryBuilder((new Pose2d()))
+                .strafeLeft(25)
+                .build();
+        followTrajectory(left);
     }
+
 
     //claw control method
     public void grabber(double grabberPosition) {

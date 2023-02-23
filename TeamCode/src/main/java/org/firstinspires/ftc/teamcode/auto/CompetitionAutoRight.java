@@ -103,7 +103,6 @@ public class CompetitionAutoRight extends LinearOpMode {
             telemetry.addLine("No tag in sight");
             telemetry.update();
             drive.rightSide();
-            drive.three();
 
         } else {
             telemetry.addData("April Code", aprilCode);
