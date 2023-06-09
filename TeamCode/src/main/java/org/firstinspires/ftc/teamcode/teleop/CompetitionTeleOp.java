@@ -45,7 +45,7 @@ public class CompetitionTeleOp extends LinearOpMode {
             //change where the slide moves
             if (gamepad2.x) {
                 if (!liftLimit.isPressed()) {
-                    drive.extenderRetract(0.6);
+                    drive.extenderRetract(0.2);
                 } else {
                     slidePosition = 0;
                 }
@@ -58,7 +58,10 @@ public class CompetitionTeleOp extends LinearOpMode {
 
             } else if (gamepad2.a) {
                 slidePosition = -4000;
-            } else if (liftLimit.isPressed()) {
+            }
+
+            //ensure the lift zeroes itself
+            if (liftLimit.isPressed()) {
                 drive.extenderZero();
             }
 
