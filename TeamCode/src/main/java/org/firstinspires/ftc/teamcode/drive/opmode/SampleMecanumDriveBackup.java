@@ -1,43 +1,4 @@
-package org.firstinspires.ftc.teamcode.drive;
-
-import androidx.annotation.NonNull;
-
-import com.acmerobotics.dashboard.config.Config;
-import com.acmerobotics.roadrunner.control.PIDCoefficients;
-import com.acmerobotics.roadrunner.drive.DriveSignal;
-import com.acmerobotics.roadrunner.drive.MecanumDrive;
-import com.acmerobotics.roadrunner.followers.HolonomicPIDVAFollower;
-import com.acmerobotics.roadrunner.followers.TrajectoryFollower;
-import com.acmerobotics.roadrunner.geometry.Pose2d;
-import com.acmerobotics.roadrunner.geometry.Vector2d;
-import com.acmerobotics.roadrunner.trajectory.Trajectory;
-import com.acmerobotics.roadrunner.trajectory.TrajectoryBuilder;
-import com.acmerobotics.roadrunner.trajectory.constraints.AngularVelocityConstraint;
-import com.acmerobotics.roadrunner.trajectory.constraints.MecanumVelocityConstraint;
-import com.acmerobotics.roadrunner.trajectory.constraints.MinVelocityConstraint;
-import com.acmerobotics.roadrunner.trajectory.constraints.ProfileAccelerationConstraint;
-import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryAccelerationConstraint;
-import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryVelocityConstraint;
-import com.qualcomm.hardware.bosch.BNO055IMU;
-import com.qualcomm.hardware.lynx.LynxModule;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.hardware.PIDFCoefficients;
-import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.hardware.TouchSensor;
-import com.qualcomm.robotcore.hardware.VoltageSensor;
-import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
-
-import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
-import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequenceBuilder;
-import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequenceRunner;
-import org.firstinspires.ftc.teamcode.util.LynxModuleUtil;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+package org.firstinspires.ftc.teamcode.drive.opmode;
 
 import static org.firstinspires.ftc.teamcode.drive.DriveConstants.MAX_ACCEL;
 import static org.firstinspires.ftc.teamcode.drive.DriveConstants.MAX_ANG_ACCEL;
@@ -52,14 +13,47 @@ import static org.firstinspires.ftc.teamcode.drive.DriveConstants.kStatic;
 import static org.firstinspires.ftc.teamcode.drive.DriveConstants.kV;
 import static java.lang.Thread.sleep;
 
-import android.hardware.Sensor;
-import android.text.method.Touch;
+import androidx.annotation.NonNull;
+
+import com.acmerobotics.dashboard.config.Config;
+import com.acmerobotics.roadrunner.control.PIDCoefficients;
+import com.acmerobotics.roadrunner.drive.DriveSignal;
+import com.acmerobotics.roadrunner.drive.MecanumDrive;
+import com.acmerobotics.roadrunner.followers.HolonomicPIDVAFollower;
+import com.acmerobotics.roadrunner.followers.TrajectoryFollower;
+import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.acmerobotics.roadrunner.trajectory.Trajectory;
+import com.acmerobotics.roadrunner.trajectory.TrajectoryBuilder;
+import com.acmerobotics.roadrunner.trajectory.constraints.AngularVelocityConstraint;
+import com.acmerobotics.roadrunner.trajectory.constraints.MecanumVelocityConstraint;
+import com.acmerobotics.roadrunner.trajectory.constraints.MinVelocityConstraint;
+import com.acmerobotics.roadrunner.trajectory.constraints.ProfileAccelerationConstraint;
+import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryAccelerationConstraint;
+import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryVelocityConstraint;
+import com.qualcomm.hardware.lynx.LynxModule;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.PIDFCoefficients;
+import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.VoltageSensor;
+import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
+
+import org.firstinspires.ftc.teamcode.drive.StandardTrackingWheelLocalizer;
+import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
+import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequenceBuilder;
+import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequenceRunner;
+import org.firstinspires.ftc.teamcode.util.LynxModuleUtil;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /*
  * Simple mecanum drive hardware implementation for REV hardware.
  */
 @Config
-public class SampleMecanumDrive extends MecanumDrive {
+public class SampleMecanumDriveBackup extends MecanumDrive {
     public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(8, 0, 1);
     public static PIDCoefficients HEADING_PID = new PIDCoefficients(8, 0, 0);
 
@@ -82,7 +76,7 @@ public class SampleMecanumDrive extends MecanumDrive {
 
     private VoltageSensor batteryVoltageSensor;
 
-    public SampleMecanumDrive(HardwareMap hardwareMap) {
+    public SampleMecanumDriveBackup(HardwareMap hardwareMap) {
         super(kV, kA, kStatic, TRACK_WIDTH, TRACK_WIDTH, LATERAL_MULTIPLIER);
 
         follower = new HolonomicPIDVAFollower(TRANSLATIONAL_PID, TRANSLATIONAL_PID, HEADING_PID,
@@ -130,62 +124,7 @@ public class SampleMecanumDrive extends MecanumDrive {
         trajectorySequenceRunner = new TrajectorySequenceRunner(follower, HEADING_PID);
     }
     //auton methods
-
-    public void testing() throws InterruptedException {
-        Pose2d startPose = new Pose2d(-32, -64, Math.toRadians(90));
-
-        setPoseEstimate(startPose);
-
-        Trajectory leftSideStrafeRight = trajectoryBuilder(startPose)
-                .strafeRight(6.5)
-                .build();
-
-        Trajectory forward = trajectoryBuilder(leftSideStrafeRight.end())
-                .forward(11)
-                .build();
-
-        Trajectory back = trajectoryBuilder(forward.end())
-                .back(9)
-                .build();
-
-        Trajectory strafeRight = trajectoryBuilder(back.end())
-                .strafeRight(11.625)
-                .build();
-
-        TrajectorySequence test = trajectorySequenceBuilder(strafeRight.end())
-                .splineTo(new Vector2d(-11.88, -23.87), Math.toRadians(90.00))
-                .splineTo(new Vector2d(-24.07, -11.48), Math.toRadians(-180.00))
-                .splineTo(new Vector2d(-66, -11.48), Math.toRadians(-180.00))
-                .build();
-
-        TrajectorySequence pole1 = trajectorySequenceBuilder(test.end())
-                .lineToSplineHeading(new Pose2d(-40.00, -11.48, Math.toRadians(-90.00)))
-                .lineTo(new Vector2d(-40, -18.27))
-                .build();
-
-
-
-
-        grabberClaw.setPosition(0);
-        followTrajectory(leftSideStrafeRight);
-        extenderMove(-1630);
-        sleep(500);
-        followTrajectory(forward);
-        sleep(500);
-        grabberClaw.setPosition(0.15);
-        followTrajectory(back);
-        extenderMove(-650);
-        followTrajectory(strafeRight);
-        followTrajectorySequence(test);
-        grabberClaw.setPosition(0);
-        sleep(500);
-        extenderMove(-3000);
-        sleep(500);
-        followTrajectorySequence(pole1);
-    }
     public void leftSide() throws InterruptedException {
-
-
 
         Pose2d startPose = new Pose2d(-32, -65, Math.toRadians(90));
 
@@ -210,7 +149,7 @@ public class SampleMecanumDrive extends MecanumDrive {
         Trajectory approachStack1 = trajectoryBuilder(strafeRight.end())
                 .forward(49)
                 .build();
-//Works Up till here
+
         Trajectory approachStack2 = trajectoryBuilder(approachStack1.end().plus(new Pose2d(0, 0, Math.toRadians(90))))
                 .forward(48)
                 .build();
@@ -251,7 +190,6 @@ public class SampleMecanumDrive extends MecanumDrive {
         sleep(500);
         followTrajectory(strafeRight);
         followTrajectory(approachStack1);
-        turn(Math.toRadians(90));
         followTrajectory(approachStack2);
         extenderMove(-650);
         sleep(500);
