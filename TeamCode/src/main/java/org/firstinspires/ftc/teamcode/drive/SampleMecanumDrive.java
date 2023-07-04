@@ -60,7 +60,7 @@ import android.text.method.Touch;
  */
 @Config
 public class SampleMecanumDrive extends MecanumDrive {
-    public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(8, 0, 1);
+    public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(8, 0, 0);
     public static PIDCoefficients HEADING_PID = new PIDCoefficients(8, 0, 0);
 
     public static double LATERAL_MULTIPLIER = 1.0169491525;
@@ -130,62 +130,7 @@ public class SampleMecanumDrive extends MecanumDrive {
         trajectorySequenceRunner = new TrajectorySequenceRunner(follower, HEADING_PID);
     }
     //auton methods
-
-    public void testing() throws InterruptedException {
-        Pose2d startPose = new Pose2d(-32, -64, Math.toRadians(90));
-
-        setPoseEstimate(startPose);
-
-        Trajectory leftSideStrafeRight = trajectoryBuilder(startPose)
-                .strafeRight(6.5)
-                .build();
-
-        Trajectory forward = trajectoryBuilder(leftSideStrafeRight.end())
-                .forward(11)
-                .build();
-
-        Trajectory back = trajectoryBuilder(forward.end())
-                .back(9)
-                .build();
-
-        Trajectory strafeRight = trajectoryBuilder(back.end())
-                .strafeRight(11.625)
-                .build();
-
-        TrajectorySequence test = trajectorySequenceBuilder(strafeRight.end())
-                .splineTo(new Vector2d(-11.88, -23.87), Math.toRadians(90.00))
-                .splineTo(new Vector2d(-24.07, -11.48), Math.toRadians(-180.00))
-                .splineTo(new Vector2d(-66, -11.48), Math.toRadians(-180.00))
-                .build();
-
-        TrajectorySequence pole1 = trajectorySequenceBuilder(test.end())
-                .lineToSplineHeading(new Pose2d(-40.00, -11.48, Math.toRadians(-90.00)))
-                .lineTo(new Vector2d(-40, -18.27))
-                .build();
-
-
-
-
-        grabberClaw.setPosition(0);
-        followTrajectory(leftSideStrafeRight);
-        extenderMove(-1630);
-        sleep(500);
-        followTrajectory(forward);
-        sleep(500);
-        grabberClaw.setPosition(0.15);
-        followTrajectory(back);
-        extenderMove(-650);
-        followTrajectory(strafeRight);
-        followTrajectorySequence(test);
-        grabberClaw.setPosition(0);
-        sleep(500);
-        extenderMove(-3000);
-        sleep(500);
-        followTrajectorySequence(pole1);
-    }
     public void leftSide() throws InterruptedException {
-
-
 
         Pose2d startPose = new Pose2d(-32, -65, Math.toRadians(90));
 
@@ -207,20 +152,17 @@ public class SampleMecanumDrive extends MecanumDrive {
                 .strafeRight(11.625)
                 .build();
 
-        Trajectory approachStack1 = trajectoryBuilder(strafeRight.end())
-                .forward(49)
-                .build();
-//Works Up till here
-        Trajectory approachStack2 = trajectoryBuilder(approachStack1.end().plus(new Pose2d(0, 0, Math.toRadians(90))))
-                .forward(48)
+        Trajectory approachStack = trajectoryBuilder(strafeRight.end())
+                .forward(35)
+                .splineTo(new Vector2d(-60, -12), Math.toRadians(180))
                 .build();
 
-        Trajectory forwardStack = trajectoryBuilder(approachStack2.end())
-                .forward(5)
+        Trajectory forwardStack = trajectoryBuilder(approachStack.end())
+                .forward(6)
                 .build();
 
         Trajectory backStack = trajectoryBuilder(forwardStack.end())
-                .back(17)
+                .back(16)
                 .build();
 
         Trajectory forwardsPole = trajectoryBuilder(backStack.end().plus(new Pose2d(0, 0, Math.toRadians(90))))
@@ -250,9 +192,7 @@ public class SampleMecanumDrive extends MecanumDrive {
         extenderMove(0);
         sleep(500);
         followTrajectory(strafeRight);
-        followTrajectory(approachStack1);
-        turn(Math.toRadians(90));
-        followTrajectory(approachStack2);
+        followTrajectory(approachStack);
         extenderMove(-650);
         sleep(500);
         followTrajectory(forwardStack);
@@ -280,7 +220,7 @@ public class SampleMecanumDrive extends MecanumDrive {
         setPoseEstimate(startPose);
 
         Trajectory leftSideStrafeLeft = trajectoryBuilder(startPose)
-                .strafeLeft(17)
+                .strafeLeft(16.5)
                 .build();
 
         Trajectory forward = trajectoryBuilder(leftSideStrafeLeft.end())
@@ -295,22 +235,17 @@ public class SampleMecanumDrive extends MecanumDrive {
                 .strafeLeft(11.625)
                 .build();
 
-        //auton part 2
-
-        Trajectory approachStack1 = trajectoryBuilder(strafeLeft.end())
-                .forward(49)
+        Trajectory approachStack = trajectoryBuilder(strafeLeft.end())
+                .forward(35)
+                .splineTo(new Vector2d(60, -12), Math.toRadians(0))
                 .build();
 
-        Trajectory approachStack2 = trajectoryBuilder(approachStack1.end().plus(new Pose2d(0, 0, Math.toRadians(-90))))
-                .forward(47)
-                .build();
-
-        Trajectory forwardStack = trajectoryBuilder(approachStack2.end())
-                .forward(5)
+        Trajectory forwardStack = trajectoryBuilder(approachStack.end())
+                .forward(6)
                 .build();
 
         Trajectory backStack = trajectoryBuilder(forwardStack.end())
-                .back(17)
+                .back(16)
                 .build();
 
         Trajectory forwardsPole = trajectoryBuilder(backStack.end().plus(new Pose2d(0, 0, Math.toRadians(-90))))
@@ -340,8 +275,7 @@ public class SampleMecanumDrive extends MecanumDrive {
         extenderMove(0);
         sleep(500);
         followTrajectory(strafeLeft);
-        followTrajectory(approachStack1);
-        followTrajectory(approachStack2);
+        followTrajectory(approachStack);
         extenderMove(-650);
         sleep(500);
         followTrajectory(forwardStack);
@@ -350,7 +284,7 @@ public class SampleMecanumDrive extends MecanumDrive {
         extenderMove(-1650);
         sleep(500);
         followTrajectory(backStack);
-        turn(Math.toRadians(-90)); //error is here
+        turn(Math.toRadians(270));
         followTrajectory(forwardsPole);
         grabberClaw.setPosition(0.15);
         sleep(500);
